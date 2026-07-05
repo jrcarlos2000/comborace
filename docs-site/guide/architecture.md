@@ -31,7 +31,7 @@ The public MVP runs in replay mode on a recorded match, because the tournament i
 
 The same server can point at the live TxLINE feed instead of a recording, with no change to the mapping logic, because a recorded snapshot and a live snapshot have the same shape. Recording a match for replay and then wiring the same shape to a live source is a natural fit.
 
-The whole thing builds into a single Docker image: the SDK, the app, and the server, served on one port. That is the entire deployment. A visitor opens the URL and watches a real recorded race with no setup.
+The whole thing builds into a single Docker image: the SDK, the app, and the server, served on one port. That is the entire deployment. A visitor opens the URL and watches a recorded replay (a scripted match in this build) with no setup.
 
 ## Smoothing is the make-or-break
 

@@ -24,7 +24,7 @@ This is the one mechanic that sets ComboRace apart. Other approaches treat a liv
 
 Plenty of people watch the World Cup with a phone in their hand and no real stake in the match. They are in the room because their friends are, and they will only really lock in if they have money on it.
 
-ComboRace is built for exactly that person. The front door needs no wallet and no live game: tapping "Watch a race" drops you into a real recorded match with cars already moving. The screen is a race track with named cars and floating win percentages, not a bet slip, so you do not need to know a handicap line from a corner total to understand it. Your car is ahead or behind, alive or dead. That is the whole game, and it reads in one glance.
+ComboRace is built for exactly that person. The front door needs no wallet and no live game: tapping "Watch a race" drops you into a recorded replay (a scripted match in this build) with cars already moving. The screen is a race track with named cars and floating win percentages, not a bet slip, so you do not need to know a handicap line from a total goals line to understand it. Your car is ahead or behind, alive or dead. That is the whole game, and it reads in one glance.
 
 ## Where it comes from
 

@@ -67,20 +67,15 @@ export interface MockFeed {
   stop: () => void;
 }
 
-// Scripted match. Deterministic so the demo always shows the split-fate beat: at 63' the
-// third goal cashes the Over car and crashes the Under car in the same frame, and the home
-// side retakes the lead at 88' to cash the favorite on the whistle.
+// Scripted goals-only match. Deterministic so the demo always shows the split-fate beat: at 58'
+// the third goal cashes the over-goals car and crashes the under-goals car in the same frame,
+// then home extends at 84' to sink the underdog handicap and cash the favorite on the whistle.
 const GOALS: { min: number; team: 'home' | 'away' }[] = [
-  { min: 21, team: 'home' },
-  { min: 44, team: 'away' },
-  { min: 63, team: 'home' },
-  { min: 78, team: 'away' },
-  { min: 88, team: 'home' },
+  { min: 12, team: 'home' },
+  { min: 34, team: 'away' },
+  { min: 58, team: 'home' },
+  { min: 84, team: 'home' },
 ];
-
-// The 9th corner lands at 52' (clears Over 8.5), the 10th at 71' (clears Over 9.5).
-const CORNER_MINUTES = [6, 13, 20, 27, 34, 41, 47, 50, 52, 71, 78, 84, 89];
-const CARD_MINUTES = [17, 39, 66, 82];
 
 const END_MINUTE = WHISTLE + 3;
 
@@ -91,14 +86,17 @@ function phaseFor(minute: number): MatchPhase {
 }
 
 export function createMockFeed(opts: MockFeedOptions): MockFeed {
-  const tickMs = opts.tickMs ?? 1000;
+  // A faster cadence than one tick per second so the whole arc (crash + cash + settle) lands
+  // inside a minute of watch time; the render smoothing interpolates across the shorter ticks.
+  const tickMs = opts.tickMs ?? 450;
   const combos = opts.combos && opts.combos.length > 0 ? opts.combos : COMBOS;
   let minute = -1;
   let timer: ReturnType<typeof setInterval> | null = null;
 
   const score = { home: 0, away: 0 };
-  let corners = 0;
-  let cards = 0;
+  let firstHalfGoals = 0;
+  const corners = 0;
+  const cards = 0;
 
   const legStatus = new Map<string, LegStatus>();
   const carStatus = new Map<string, CarStatus>();
@@ -123,16 +121,23 @@ export function createMockFeed(opts: MockFeedOptions): MockFeed {
       if (g.min === minute) {
         if (g.team === 'home') score.home += 1;
         else score.away += 1;
+        if (minute <= 45) firstHalfGoals += 1;
         events.push({ type: 'goal', team: g.team, minute, score: { ...score } });
       }
     }
-    for (const cm of CORNER_MINUTES) if (cm === minute) { corners += 1; events.push({ type: 'corner', minute }); }
-    for (const dm of CARD_MINUTES) if (dm === minute) { cards += 1; events.push({ type: 'card', minute }); }
     if (minute === 45) events.push({ type: 'halftime' });
     if (minute === WHISTLE) events.push({ type: 'fulltime' });
 
     const isFullTime = minute >= WHISTLE;
-    const state: MatchState = { minute, home: score.home, away: score.away, corners, cards, isFullTime };
+    const state: MatchState = {
+      minute,
+      home: score.home,
+      away: score.away,
+      firstHalfGoals,
+      corners,
+      cards,
+      isFullTime,
+    };
 
     const cars: CarTick[] = combos.map((combo) => {
       const status = carStatus.get(combo.id) ?? 'racing';

@@ -4,11 +4,15 @@ import { createMatchFeed, type FeedSource, type FeedStatus } from '../feed/match
 import { BUY_IN, computeStandings, fieldCombos, pickWinner, racerFor, type Racer } from '../game/session';
 import { useMoneyFlow, type Settlement } from '../game/useMoneyFlow';
 import { MomentSheet, type MomentData } from '../share/KillCard';
+import { raceAudio } from '../audio/raceAudio';
+import { clamp01 } from '../mock/probability';
 import colors, { cashRgb, crashRgb } from '../theme/colors';
 import { Particles, type ParticlesHandle } from './Particles';
 import { RaceTrack } from './RaceTrack';
 import { Scoreboard } from './Scoreboard';
 import { ResultOverlay } from './ResultOverlay';
+import { Coach, hasSeenCoach } from './Coach';
+import { OracleTicker, OracleFlashToast, selectOracleFlash, type OracleFlash } from './OracleTicker';
 
 const NEAR_DEATH = 0.16;
 
@@ -28,13 +32,17 @@ export function RaceScreen({
   const [tick, setTick] = useState<MatchTick | null>(null);
   const [ended, setEnded] = useState(false);
   const [moment, setMoment] = useState<MomentData | null>(null);
+  const [flash, setFlash] = useState<OracleFlash | null>(null);
   const [settlement, setSettlement] = useState<Settlement | null>(null);
   const [feedStatus, setFeedStatus] = useState<FeedStatus>('connecting');
+  const [showCoach, setShowCoach] = useState(() => !hasSeenCoach());
 
   const { pool, phase, settleAndPay } = useMoneyFlow(field);
   const lastTick = useRef<MatchTick | null>(null);
   const settledRef = useRef(false);
   const endedRef = useRef(false);
+  const youId = (field.find((r) => r.isYou) ?? field[0])?.combo.id;
+  const prevYourPct = useRef(0);
 
   useEffect(() => {
     setTick(null);
@@ -53,6 +61,9 @@ export function RaceScreen({
         setTick(t);
         const next = selectMoment(t.events, t.cars, field);
         if (next) setMoment(next);
+        const nextFlash = selectOracleFlash(t.events, t.score, t.minute);
+        if (nextFlash) setFlash(nextFlash);
+        driveAudio(t, youId, prevYourPct);
       },
       onEnd: () => {
         endedRef.current = true;
@@ -80,6 +91,18 @@ export function RaceScreen({
     return () => window.clearTimeout(timer);
   }, [moment]);
 
+  useEffect(() => {
+    if (!flash) return;
+    const timer = window.setTimeout(() => setFlash(null), 2600);
+    return () => window.clearTimeout(timer);
+  }, [flash]);
+
+  // Idle the engine hum toward silence when the race is over or this screen unmounts.
+  useEffect(() => {
+    if (ended) raceAudio.setEngine(0, false);
+  }, [ended]);
+  useEffect(() => () => raceAudio.setEngine(0, false), []);
+
   const you = field.find((r) => r.isYou) ?? field[0];
   const yourCar = tick?.cars.find((c) => c.id === you.combo.id);
   const nearDeath = !!yourCar && yourCar.status === 'racing' && yourCar.pct < NEAR_DEATH;
@@ -89,8 +112,12 @@ export function RaceScreen({
     <div className="relative mx-auto flex min-h-[100dvh] max-w-md flex-col">
       <Particles ref={particlesRef} />
       {nearDeath && <div className="redline-vignette" aria-hidden="true" />}
-      <FeedBadge source={feedSource} status={feedStatus} />
-      <Scoreboard tick={tick} />
+      <Scoreboard
+        tick={tick}
+        live={feedStatus === 'live'}
+        feed={<FeedBadge source={feedSource} status={feedStatus} />}
+        action={<MuteButton />}
+      />
       <YourStakeBar
         car={yourCar}
         handle={you.combo.handle}
@@ -99,6 +126,8 @@ export function RaceScreen({
         place={standings.get(you.combo.id)}
         total={tick?.cars.length ?? field.length}
       />
+      <OracleTicker tick={tick} />
+      {flash && <OracleFlashToast flash={flash} />}
       <RaceTrack
         key={combos.map((c) => c.id).join(',')}
         tick={tick}
@@ -111,6 +140,8 @@ export function RaceScreen({
 
       {moment && <MomentSheet moment={moment} onClose={() => setMoment(null)} />}
 
+      {showCoach && <Coach onDone={() => setShowCoach(false)} />}
+
       {ended && tick && (
         <ResultOverlay
           cars={tick.cars}
@@ -122,6 +153,42 @@ export function RaceScreen({
         />
       )}
     </div>
+  );
+}
+
+// Turns a tick into sound: one-shot crash / cash / pot-tick cues off the events, plus an engine
+// hum whose pitch and volume track your car's position and how fast it is moving. Every call is a
+// no-op when muted (the audio layer guards it), so this is safe to run every tick.
+function driveAudio(t: MatchTick, youId: string | undefined, prevYourPct: React.MutableRefObject<number>): void {
+  for (const ev of t.events) {
+    if (ev.type === 'crash') {
+      raceAudio.crash();
+      // A rival dying grows the survivor pool: a small pot-tick, but not when it is your own car.
+      if (ev.carId !== youId) window.setTimeout(() => raceAudio.potTick(), 140);
+    } else if (ev.type === 'cash') {
+      raceAudio.cash();
+    }
+  }
+  const your = youId ? t.cars.find((c) => c.id === youId) : undefined;
+  if (!your) return;
+  const pct = your.status === 'crashed' ? 0 : your.status === 'cashed' ? 1 : your.pct;
+  const delta = pct - prevYourPct.current;
+  prevYourPct.current = pct;
+  raceAudio.setEngine(clamp01(pct * 0.65 + Math.abs(delta) * 4), your.status === 'racing');
+}
+
+function MuteButton() {
+  const [muted, setMuted] = useState(raceAudio.isMuted());
+  useEffect(() => raceAudio.subscribe(setMuted), []);
+  return (
+    <button
+      onClick={() => raceAudio.toggleMuted()}
+      className="focus-ring inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition hover:border-white/20 hover:text-white/90"
+      aria-label={muted ? 'Unmute race sound' : 'Mute race sound'}
+      aria-pressed={muted}
+    >
+      <span className="text-[13px] leading-none">{muted ? '\u{1F507}' : '\u{1F50A}'}</span>
+    </button>
   );
 }
 
@@ -181,24 +248,43 @@ function cashMoment(ev: Extract<FeedEvent, { type: 'cash' }>, field: Racer[]): M
   };
 }
 
+interface FeedBadgeStyle {
+  label: string;
+  dot: string;
+  ring: string;
+  text: string;
+  glow: boolean;
+  pulse: boolean;
+}
+
+// The server feed silently falls back to a local replay, so there is no dead-end disconnect
+// to surface. What matters is legibility of the degraded states: connecting reads as a warning
+// (amber, pulsing), live reads positive (green, glowing), a fallback reads muted-neutral.
+function feedBadgeStyle(source: FeedSource, status: FeedStatus): FeedBadgeStyle {
+  if (source === 'local') {
+    return { label: 'local demo', dot: 'bg-white/40', ring: 'ring-white/10', text: 'text-white/55', glow: false, pulse: false };
+  }
+  if (status === 'live') {
+    return { label: 'live feed', dot: 'bg-cash', ring: 'ring-cash/25', text: 'text-white/75', glow: true, pulse: false };
+  }
+  if (status === 'local') {
+    return { label: 'offline replay', dot: 'bg-white/40', ring: 'ring-white/10', text: 'text-white/55', glow: false, pulse: false };
+  }
+  return { label: 'connecting', dot: 'bg-yellow-400', ring: 'ring-yellow-400/30', text: 'text-white/65', glow: false, pulse: true };
+}
+
 function FeedBadge({ source, status }: { source: FeedSource; status: FeedStatus }) {
-  const live = status === 'live';
-  const label =
-    source === 'local'
-      ? 'local demo'
-      : status === 'live'
-        ? 'live feed'
-        : status === 'local'
-          ? 'offline replay'
-          : 'connecting';
+  const s = feedBadgeStyle(source, status);
   return (
-    <div className="pointer-events-none absolute left-3 top-3 z-30 flex items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-2 py-1 backdrop-blur-sm">
+    <span
+      className={`pointer-events-none mt-px inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 ring-1 ${s.ring}`}
+    >
       <span
-        className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-cash' : 'bg-white/40'}`}
-        style={live ? { boxShadow: `0 0 6px rgba(${cashRgb}, 0.55)` } : undefined}
+        className={`h-1.5 w-1.5 rounded-full ${s.dot} ${s.pulse ? 'animate-pulse' : ''}`}
+        style={s.glow ? { boxShadow: `0 0 6px rgba(${cashRgb}, 0.55)` } : undefined}
       />
-      <span className="text-[9px] font-semibold uppercase tracking-widest text-white/50">{label}</span>
-    </div>
+      <span className={`text-[10px] font-semibold uppercase tracking-widest ${s.text}`}>{s.label}</span>
+    </span>
   );
 }
 
@@ -275,14 +361,14 @@ function YourStakeBar({
   return (
     <div className="sticky top-[92px] z-20 px-3 pb-1.5 pt-1">
       <div
-        className={`flex items-center justify-between rounded-2xl border px-3.5 py-2.5 transition-colors ${
-          crashed ? 'border-crash/40 bg-crash/[0.06]' : rising || leading ? 'border-cash/50 bg-cash/[0.07]' : 'border-white/8 bg-white/[0.03]'
+        className={`flex items-center justify-between rounded-2xl border bg-white/[0.03] px-3.5 py-2.5 transition-colors ${
+          crashed ? 'border-crash/30' : rising || leading ? 'border-cash/30' : 'border-white/10'
         }`}
       >
         <div className="min-w-0">
-          <div className="text-[10px] uppercase tracking-widest text-white/35">{label}</div>
-          <div className="truncate text-xs font-semibold text-white/60">
-            {handle} <span className="text-white/30">&middot; racing for ${pot}</span>
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-white/50">{label}</div>
+          <div className="mt-0.5 truncate text-xs font-semibold text-white/65">
+            {handle} <span className="text-white/40">&middot; racing for <span className="tabular-nums">${pot}</span></span>
           </div>
         </div>
         <div className="shrink-0 text-right">

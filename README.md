@@ -14,10 +14,10 @@ Built for the TxODDS World Cup hackathon on Superteam Earn, Consumer & Fan Exper
 
 ## The mechanic
 
-- **Car = a parlay.** Each player builds a multi-leg combo from match markets (over/under goals, both-teams-to-score, 1X2, corners, cards, first-half lines). No player-scorer legs, since TxLINE has no player-level data.
+- **Car = a parlay.** Each player builds a multi-leg combo from the goals markets TxLINE prices with a de-vigged `Pct` (over/under total goals, 1X2, Asian handicap, team totals, first-half goals). Corners, cards and both-teams-to-score carry no `Pct` on the feed, so no leg models them; and there are no player-scorer legs, since TxLINE has no player-level data.
 - **Position = live cash probability, not elapsed time.** The car advances when the match goes its way and gets dragged back when it does not. We multiply the live `Pct` of every pending leg to get one number: the chance this combo still pays.
 - **Crash at 0%, cash at 100%.** A leg loses (a second goal kills an Under, say) and the car detonates on the spot with a full-screen kill cam and a shareable Kill Card. All legs win and the car crosses the line.
-- **Balanced-grid draft.** On lobby open we auto-generate cars spread across opposing markets (Over vs Under, favorite vs underdog, BTTS yes vs no) so no single scoreline moves the whole field the same way. A 0-0 rockets the Under cars and starves the Over cars, and a chaos match does the reverse. This is the fix for the dead-track problem.
+- **Balanced-grid draft.** On lobby open we auto-generate cars spread across opposing goals markets (Over vs Under total goals, favorite vs underdog on the result and Asian handicap, home total vs away total) so no single scoreline moves the whole field the same way. A 0-0 rockets the Under cars and starves the Over cars, and a goal-fest does the reverse. This is the fix for the dead-track problem.
 - **No house.** Equal buy-in, one pot per lobby, settled from the TxLINE oracle result. Payout is fully on-chain, so nobody custodies funds or approves a payout by hand.
 
 Full game design is in [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md); the sharpened plan is in [`docs/WINNING_PLAN.md`](docs/WINNING_PLAN.md).
@@ -105,7 +105,7 @@ app/        React + Vite frontend: the race canvas, smoothing, kill cam, wallet-
 sdk/        @comborace/sdk: on-chain escrow client + in-memory mock twin
 program/    Anchor (Rust) minimal escrow
 server/     single Node service: serves the app + streams the match feed over WebSocket
-scripts/    record-match / replay-match / capture-mock
+scripts/    record-match / replay-match / generate-sample-match (the public replay) / capture-mock
 data/        recorded match JSONL files (the public replay feed)
 docs/        design, plan, TxLINE capabilities, hackathon guidelines, checklist
 Dockerfile  single-process image for the whole MVP

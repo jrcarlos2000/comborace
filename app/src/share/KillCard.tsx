@@ -1,7 +1,7 @@
 import { forwardRef, useRef, useState } from 'react';
 import { toBlob } from 'html-to-image';
 import { difficultyLabel } from '../mock/combos';
-import colors, { cashRgb, crashRgb } from '../theme/colors';
+import colors, { brandRgb, cashRgb, crashRgb } from '../theme/colors';
 
 export interface MomentData {
   id: string;
@@ -18,8 +18,21 @@ export interface MomentData {
   isYou: boolean;
 }
 
+const SHARE_URL = 'https://comborace.jrcarlos2000.dev';
+
 async function capture(node: HTMLElement): Promise<Blob | null> {
-  return toBlob(node, { pixelRatio: 2.4, cacheBust: true, backgroundColor: '#06060c' });
+  return toBlob(node, { pixelRatio: 2.4, cacheBust: true, backgroundColor: colors.track.base });
+}
+
+// Text-intent share to X. The card PNG rides the native share sheet (shareNode); this is the
+// no-image fallback path that always unfurls the link and pre-fills the post.
+function shareOnX(moment: MomentData): void {
+  const text =
+    moment.kind === 'crash'
+      ? `${moment.handle} got WRECKED on ComboRace. ${moment.detail}`
+      : `${moment.handle} CASHED on ComboRace. ${moment.detail}`;
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SHARE_URL)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 async function shareNode(node: HTMLElement, moment: MomentData): Promise<'shared' | 'saved' | 'failed'> {
@@ -62,7 +75,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
         boxSizing: 'border-box',
         padding: 22,
         borderRadius: 26,
-        background: `radial-gradient(120% 80% at 50% -10%, rgba(${moment.colorRgb},0.22), transparent 60%), linear-gradient(180deg, #10101c, #06060c)`,
+        background: `radial-gradient(120% 80% at 50% -10%, rgba(${moment.colorRgb},0.22), transparent 60%), linear-gradient(180deg, #10101c, ${colors.track.base})`,
         border: `1px solid rgba(${accentRgb},0.35)`,
         fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         color: '#fff',
@@ -70,7 +83,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
         <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: '-0.02em' }}>
-          <span style={{ color: '#7E5DFE' }}>COMBO</span>
+          <span style={{ color: colors.brand.DEFAULT }}>COMBO</span>
           <span style={{ color: '#fff' }}>RACE</span>
         </span>
         <span
@@ -113,7 +126,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
               padding: '2px 6px',
               borderRadius: 6,
               color: '#fff',
-              background: 'rgba(126,93,254,0.35)',
+              background: `rgba(${brandRgb},0.35)`,
             }}
           >
             YOU
@@ -151,7 +164,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
       </div>
 
       <div style={{ marginTop: 16, fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>
-        &ldquo;{moment.tagline}&rdquo; &middot; no house &middot; settled on-chain
+        &ldquo;{moment.tagline}&rdquo; &middot; skill game &middot; settled on-chain
       </div>
     </div>
   );
@@ -200,15 +213,22 @@ export function ShareButton({
   const text = state === 'working' ? 'rendering...' : state === 'shared' ? 'shared' : state === 'saved' ? 'saved' : label;
 
   return (
-    <button
-      onClick={onClick}
-      className={
-        className ??
-        'rounded-2xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white transition active:scale-[0.98] disabled:opacity-50'
-      }
-      disabled={state === 'working'}
-    >
+    <button onClick={onClick} className={className ?? 'btn-secondary px-4 py-2.5 text-sm'} disabled={state === 'working'}>
       {text}
+    </button>
+  );
+}
+
+// Opens an X compose window pre-filled with the moment and the ComboRace link, so a shared post
+// unfurls the OG card. Reuses the same copy the image share uses.
+export function ShareOnXButton({ moment, className }: { moment: MomentData; className?: string }) {
+  return (
+    <button
+      onClick={() => shareOnX(moment)}
+      className={className ?? 'btn-secondary px-4 py-2.5 text-sm'}
+      aria-label="Share on X"
+    >
+      Share on X
     </button>
   );
 }
@@ -223,15 +243,9 @@ export function MomentSheet({ moment, onClose }: { moment: MomentData; onClose: 
       <div className="moment-pop pointer-events-auto w-full max-w-sm">
         <ShareCard ref={cardRef} moment={moment} />
         <div className="mt-2 flex gap-2">
-          <ShareButton
-            moment={moment}
-            cardRef={cardRef}
-            className="flex-1 rounded-2xl bg-brand py-3 text-sm font-bold text-white transition active:scale-[0.98] disabled:opacity-50"
-          />
-          <button
-            onClick={onClose}
-            className="rounded-2xl border border-white/12 bg-white/[0.05] px-4 py-3 text-sm font-bold text-white/70 transition active:scale-95"
-          >
+          <ShareButton moment={moment} cardRef={cardRef} className="btn-primary flex-1 py-3 text-sm" />
+          <ShareOnXButton moment={moment} className="btn-secondary px-3 py-3 text-sm" />
+          <button onClick={onClose} className="btn-secondary px-4 py-3 text-sm">
             Dismiss
           </button>
         </div>

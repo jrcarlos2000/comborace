@@ -12,11 +12,13 @@ RUN cd sdk && npm ci --no-audit
 COPY sdk/ ./sdk/
 RUN cd sdk && npm run build
 
-# App: produces the wallet-free static bundle in app/dist.
+# App: produces the wallet-free static bundle in app/dist. This image also runs the WebSocket
+# match server on the same port, so "Watch a race" streams from that feed (VITE_LIVE_FEED=true);
+# the static public deploy leaves the flag off and plays a client-side replay instead.
 COPY app/package.json app/package-lock.json ./app/
 RUN cd app && npm ci --no-audit
 COPY app/ ./app/
-RUN cd app && npm run build
+RUN cd app && VITE_LIVE_FEED=true npm run build
 
 # Server: compiles the single Node service, then drops dev dependencies for the runtime copy.
 COPY server/package.json server/package-lock.json ./server/

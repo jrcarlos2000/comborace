@@ -269,6 +269,8 @@ export function RaceTrack({
           <span className="finish-sub">winner takes all</span>
         </div>
 
+        {!tick && <ArenaConnecting />}
+
         {top.map((combo, i) => (
           <CarLane
             key={combo.id}
@@ -376,6 +378,25 @@ function CarLane({
           </span>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Shown over the arena until the first tick lands, so the feed handshake reads as a considered
+// loading state that mirrors the four lanes instead of four cars parked at the crash zone.
+function ArenaConnecting() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 flex animate-fade-in flex-col justify-center gap-3 bg-track-bg/55 px-4 backdrop-blur-[1px]">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="flex items-center gap-2.5">
+          <span className="skeleton h-2.5 w-2.5 shrink-0 rounded-full" />
+          <span className="skeleton h-3 w-20 shrink-0" />
+          <span className="skeleton h-7 shrink-0 rounded-lg" style={{ width: `${34 + i * 14}%` }} />
+        </div>
+      ))}
+      <span className="absolute inset-x-0 bottom-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+        warming up the grid...
+      </span>
     </div>
   );
 }

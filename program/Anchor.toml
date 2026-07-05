@@ -6,13 +6,13 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-combo_race = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+combo_race = "2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4"
 
 [programs.devnet]
-combo_race = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+combo_race = "2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4"
 
 [programs.mainnet]
-combo_race = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+combo_race = "2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4"
 
 [registry]
 url = "https://api.apr.dev"

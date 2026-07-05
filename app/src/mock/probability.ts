@@ -1,8 +1,10 @@
 // Live win-probability models for combo legs.
-// Goals, corners and cards are modeled as Poisson processes over the minutes still
-// to play, so a leg's probability drifts smoothly minute to minute and jumps on events.
-// This mirrors what the real feed will feed us: TxLINE ships a de-vigged Pct per market,
-// so the Data agent later swaps these estimators for the recorded Pct values, same shape.
+// Every market here is a GOALS market, because that is what TxLINE prices with a de-vigged
+// Pct: over/under total goals, 1X2, Asian handicap, team totals and first-half goals. Corners,
+// cards and both-teams-to-score carry no Pct on the feed, so no leg reads them.
+// Goals are modeled as Poisson processes over the minutes still to play, so a leg's probability
+// drifts smoothly minute to minute and jumps on a goal. This mirrors the real feed: TxLINE
+// ships a de-vigged Pct per market, so the recorded Pct values drop straight into the same shape.
 
 export type LegStatus = 'pending' | 'won' | 'lost';
 
@@ -15,6 +17,8 @@ export interface MatchState {
   minute: number;
   home: number;
   away: number;
+  // Goals scored before the first-half whistle, frozen at half time. Drives first-half markets.
+  firstHalfGoals: number;
   corners: number;
   cards: number;
   isFullTime: boolean;
@@ -22,13 +26,13 @@ export interface MatchState {
 
 // Full-time whistle at 90 plus typical stoppage. No extra time counts (sportsbook rule).
 export const WHISTLE = 93;
+// First-half whistle at 45 plus typical stoppage, the settlement point for first-half markets.
+export const FIRST_HALF_WHISTLE = 47;
 
-// Tournament-average rates over a full 90, spread across the time still to play.
+// Tournament-average goal rates over a full 90, spread across the time still to play.
 const TOTAL_GOALS_AVG = 2.7;
 const HOME_GOALS_AVG = 1.5;
 const AWAY_GOALS_AVG = 1.25;
-const CORNERS_AVG = 10.2;
-const CARDS_AVG = 4.2;
 
 export function clamp01(x: number): number {
   return x < 0 ? 0 : x > 1 ? 1 : x;
@@ -40,6 +44,11 @@ function remainingMinutes(minute: number): number {
 
 function expectedRemaining(avg: number, minute: number): number {
   return avg * (remainingMinutes(minute) / 90);
+}
+
+// Goals still expected before the first-half whistle only.
+function expectedRemainingFirstHalf(avg: number, minute: number): number {
+  return avg * (Math.max(0, FIRST_HALF_WHISTLE - minute) / 90);
 }
 
 function factorial(n: number): number {
@@ -100,58 +109,6 @@ export function underGoals(line: number, s: MatchState): LegEval {
   return { pct: poissonCdf(cap - total, expectedRemaining(TOTAL_GOALS_AVG, s.minute)), status: 'pending' };
 }
 
-export function overCorners(line: number, s: MatchState): LegEval {
-  const need = Math.floor(line) + 1;
-  if (s.corners >= need) return { pct: 1, status: 'won' };
-  if (s.isFullTime) return { pct: 0, status: 'lost' };
-  return { pct: poissonTail(need - s.corners, expectedRemaining(CORNERS_AVG, s.minute)), status: 'pending' };
-}
-
-export function underCards(line: number, s: MatchState): LegEval {
-  const cap = Math.floor(line);
-  if (s.cards > cap) return { pct: 0, status: 'lost' };
-  if (s.isFullTime) return { pct: 1, status: 'won' };
-  return { pct: poissonCdf(cap - s.cards, expectedRemaining(CARDS_AVG, s.minute)), status: 'pending' };
-}
-
-export function bttsYes(s: MatchState): LegEval {
-  if (s.home >= 1 && s.away >= 1) return { pct: 1, status: 'won' };
-  if (s.isFullTime) return { pct: 0, status: 'lost' };
-  let p = 1;
-  if (s.home < 1) p *= 1 - Math.exp(-expectedRemaining(HOME_GOALS_AVG, s.minute));
-  if (s.away < 1) p *= 1 - Math.exp(-expectedRemaining(AWAY_GOALS_AVG, s.minute));
-  return { pct: clamp01(p), status: 'pending' };
-}
-
-export function homeWin(s: MatchState): LegEval {
-  const diff = s.home - s.away;
-  // Settles only at the whistle. A draw loses a home-win bet.
-  if (s.isFullTime) return diff > 0 ? { pct: 1, status: 'won' } : { pct: 0, status: 'lost' };
-  const muH = expectedRemaining(HOME_GOALS_AVG, s.minute);
-  const muA = expectedRemaining(AWAY_GOALS_AVG, s.minute);
-  const mean = diff + muH - muA;
-  const sd = Math.sqrt(muH + muA + 0.25);
-  // P(final margin >= 1), normal approximation to Skellam with a continuity correction.
-  return { pct: clamp01(1 - normalCdf(0.5, mean, sd)), status: 'pending' };
-}
-
-export function awayWin(s: MatchState): LegEval {
-  const diff = s.away - s.home;
-  if (s.isFullTime) return diff > 0 ? { pct: 1, status: 'won' } : { pct: 0, status: 'lost' };
-  const muH = expectedRemaining(HOME_GOALS_AVG, s.minute);
-  const muA = expectedRemaining(AWAY_GOALS_AVG, s.minute);
-  const mean = diff + muA - muH;
-  const sd = Math.sqrt(muH + muA + 0.25);
-  return { pct: clamp01(1 - normalCdf(0.5, mean, sd)), status: 'pending' };
-}
-
-export function overCards(line: number, s: MatchState): LegEval {
-  const need = Math.floor(line) + 1;
-  if (s.cards >= need) return { pct: 1, status: 'won' };
-  if (s.isFullTime) return { pct: 0, status: 'lost' };
-  return { pct: poissonTail(need - s.cards, expectedRemaining(CARDS_AVG, s.minute)), status: 'pending' };
-}
-
 export function overTeamGoals(line: number, team: 'home' | 'away', s: MatchState): LegEval {
   const scored = team === 'home' ? s.home : s.away;
   const avg = team === 'home' ? HOME_GOALS_AVG : AWAY_GOALS_AVG;
@@ -159,4 +116,69 @@ export function overTeamGoals(line: number, team: 'home' | 'away', s: MatchState
   if (scored >= need) return { pct: 1, status: 'won' };
   if (s.isFullTime) return { pct: 0, status: 'lost' };
   return { pct: poissonTail(need - scored, expectedRemaining(avg, s.minute)), status: 'pending' };
+}
+
+export function firstHalfOverGoals(line: number, s: MatchState): LegEval {
+  const need = Math.floor(line) + 1;
+  if (s.firstHalfGoals >= need) return { pct: 1, status: 'won' };
+  if (s.minute >= FIRST_HALF_WHISTLE) return { pct: 0, status: 'lost' };
+  return {
+    pct: poissonTail(need - s.firstHalfGoals, expectedRemainingFirstHalf(TOTAL_GOALS_AVG, s.minute)),
+    status: 'pending',
+  };
+}
+
+export function firstHalfUnderGoals(line: number, s: MatchState): LegEval {
+  const cap = Math.floor(line);
+  if (s.firstHalfGoals > cap) return { pct: 0, status: 'lost' };
+  if (s.minute >= FIRST_HALF_WHISTLE) return { pct: 1, status: 'won' };
+  return {
+    pct: poissonCdf(cap - s.firstHalfGoals, expectedRemainingFirstHalf(TOTAL_GOALS_AVG, s.minute)),
+    status: 'pending',
+  };
+}
+
+// The three 1X2 outcome probabilities, from a normal approximation to the Skellam of the two
+// remaining-goals Poissons. Kept as one function so home, draw and away always sum to one.
+function resultProbs(s: MatchState): { home: number; draw: number; away: number } {
+  const muH = expectedRemaining(HOME_GOALS_AVG, s.minute);
+  const muA = expectedRemaining(AWAY_GOALS_AVG, s.minute);
+  const mean = s.home - s.away + muH - muA;
+  const sd = Math.sqrt(muH + muA + 0.25);
+  const home = clamp01(1 - normalCdf(0.5, mean, sd));
+  const away = clamp01(normalCdf(-0.5, mean, sd));
+  const draw = clamp01(1 - home - away);
+  return { home, draw, away };
+}
+
+export function homeWin(s: MatchState): LegEval {
+  if (s.isFullTime) return s.home > s.away ? { pct: 1, status: 'won' } : { pct: 0, status: 'lost' };
+  return { pct: resultProbs(s).home, status: 'pending' };
+}
+
+export function awayWin(s: MatchState): LegEval {
+  if (s.isFullTime) return s.away > s.home ? { pct: 1, status: 'won' } : { pct: 0, status: 'lost' };
+  return { pct: resultProbs(s).away, status: 'pending' };
+}
+
+export function drawResult(s: MatchState): LegEval {
+  if (s.isFullTime) return s.home === s.away ? { pct: 1, status: 'won' } : { pct: 0, status: 'lost' };
+  return { pct: resultProbs(s).draw, status: 'pending' };
+}
+
+// Asian handicap on a half line (no push). `line` is the signed handicap applied to `team`
+// (a favorite runs -1.5, an underdog +1.5), so the bet wins when the handicap-adjusted margin
+// is positive at full time.
+export function asianHandicap(team: 'home' | 'away', line: number, s: MatchState): LegEval {
+  const teamGoals = team === 'home' ? s.home : s.away;
+  const oppGoals = team === 'home' ? s.away : s.home;
+  const margin = teamGoals - oppGoals + line;
+  if (s.isFullTime) return margin > 0 ? { pct: 1, status: 'won' } : { pct: 0, status: 'lost' };
+  const teamAvg = team === 'home' ? HOME_GOALS_AVG : AWAY_GOALS_AVG;
+  const oppAvg = team === 'home' ? AWAY_GOALS_AVG : HOME_GOALS_AVG;
+  const muTeam = expectedRemaining(teamAvg, s.minute);
+  const muOpp = expectedRemaining(oppAvg, s.minute);
+  const mean = margin + muTeam - muOpp;
+  const sd = Math.sqrt(muTeam + muOpp + 0.25);
+  return { pct: clamp01(1 - normalCdf(0, mean, sd)), status: 'pending' };
 }

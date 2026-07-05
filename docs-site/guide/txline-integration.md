@@ -14,17 +14,16 @@ For a game whose entire premise is "position equals the live chance your combo s
 
 Odds place the cars. The scores feed decides when a leg is won or lost.
 
-The soccer scores feed encodes goals, yellow cards, red cards, and corners, per team and per half, plus a match-phase code (including ended, and ended after a penalty shootout). That is a rich enough surface to settle real combos:
+The soccer scores feed encodes goals, yellow cards, red cards, and corners, per team and per half, plus a match-phase code (including ended, and ended after a penalty shootout). It is not a bare 1X2 feed.
+
+A car's position is a live odds `Pct`, so ComboRace only offers markets the odds feed prices with a de-vigged `Pct`. That is the goals family:
 
 - Total goals over and under, and team totals
-- Both teams to score
 - Match result (1X2)
-- Total corners over and under
-- Total cards over and under, and red card yes or no
-- First-half versions of the goals, corners, and cards lines
-- Handicap and correct score
+- Asian handicap
+- First-half over and under goals
 
-It is not a bare 1X2 feed. The one thing it does not carry is player-level data, so there are no goalscorer or player-prop legs. That is a clean limit to design around rather than a blocker.
+Corners and cards are settleable from the scores feed, but the odds feed carries no `Pct` for them, so a car built on a corner or card line would have no live position to move. Both-teams-to-score is the same case. The one thing the feed does not carry at all is player-level data, so there are no goalscorer or player-prop legs. These are clean limits to design around rather than blockers.
 
 ## On-chain verifiable results
 

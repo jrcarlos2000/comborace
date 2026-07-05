@@ -3,21 +3,20 @@ import type { LegStatus } from '../feed/types.js';
 
 // TxLINE odds Pct -> per-combo win probability.
 //
-// TxLINE ships odds with a `Pct` array = de-vigged (demargined) win-probabilities, already
-// the "how likely is this outcome" number we want for a car's position. Odds payload fields
-// per docs: MarketParameters, MarketPeriod, PriceNames, Prices, Pct. A snapshot carries many
-// markets; we pick the one matching each leg (market kind + line + period + team/side) and
-// read its Pct entry.
-//
-// TODO(real-sample): the market-matching below is a best-effort structural walk. Once tonight's
-// recorded /api/odds/snapshot lands, replace matchMarketPct with exact reads keyed on the real
-// MarketParameters / PriceNames values, then delete this note.
+// Per docs.yaml each Odds object carries SuperOddsType (the market kind, e.g.
+// OVERUNDER_PARTICIPANT_GOALS, 1X2_PARTICIPANT_RESULT, ASIANHANDICAP_PARTICIPANT_GOALS),
+// MarketParameters (the line and which participant), MarketPeriod (full match vs first half),
+// PriceNames (the outcome labels, e.g. Over/Under or 1/X/2 or Home/Away) and a parallel `Pct`
+// array. `Pct` is the de-vigged (demargined) win-probability already, the exact "how likely is
+// this outcome" number a car's position wants. A snapshot carries many markets; we pick the one
+// matching a leg's kind + line + participant + period and read its Pct at the leg's price index.
 
-interface MarketLike {
-  pct: number[];
+interface Market {
+  superType: string;
+  params: string;
+  period: string;
   priceNames: string[];
-  params: Record<string, unknown>;
-  period: unknown;
+  pct: number[];
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -27,6 +26,7 @@ function asRecord(value: unknown): Record<string, unknown> | null {
 function numArray(value: unknown): number[] {
   if (Array.isArray(value)) return value.map((x) => Number(x)).filter((x) => Number.isFinite(x));
   if (typeof value === 'number' && Number.isFinite(value)) return [value];
+  if (typeof value === 'string' && Number.isFinite(Number(value))) return [Number(value)];
   return [];
 }
 
@@ -36,18 +36,24 @@ function strArray(value: unknown): string[] {
   return [];
 }
 
-// Walk an arbitrary odds payload and collect anything that looks like a priced market.
-function collectMarkets(node: unknown, acc: MarketLike[], depth = 0): void {
+function str(value: unknown): string {
+  return typeof value === 'string' ? value : value === undefined || value === null ? '' : String(value);
+}
+
+// Walk an arbitrary odds payload (an array of Odds, or an envelope wrapping one) and collect
+// every priced market. A market is any node carrying a Pct array alongside its price names.
+function collectMarkets(node: unknown, acc: Market[], depth = 0): void {
   if (depth > 8) return;
   const rec = asRecord(node);
   if (rec) {
     const pct = numArray(rec['Pct'] ?? rec['pct']);
     if (pct.length > 0) {
       acc.push({
-        pct,
+        superType: str(rec['SuperOddsType'] ?? rec['superOddsType']).toUpperCase(),
+        params: str(rec['MarketParameters'] ?? rec['marketParameters']),
+        period: str(rec['MarketPeriod'] ?? rec['marketPeriod']),
         priceNames: strArray(rec['PriceNames'] ?? rec['priceNames']),
-        params: asRecord(rec['MarketParameters'] ?? rec['marketParameters']) ?? {},
-        period: rec['MarketPeriod'] ?? rec['marketPeriod'],
+        pct,
       });
     }
     for (const v of Object.values(rec)) collectMarkets(v, acc, depth + 1);
@@ -59,8 +65,6 @@ function collectMarkets(node: unknown, acc: MarketLike[], depth = 0): void {
 const SIDE_HINTS: Record<string, string[]> = {
   over: ['over', 'o', 'more'],
   under: ['under', 'u', 'less'],
-  yes: ['yes', 'gg'],
-  no: ['no', 'ng'],
   home: ['home', '1', 'p1'],
   draw: ['draw', 'x'],
   away: ['away', '2', 'p2'],
@@ -75,21 +79,62 @@ function priceIndexForSide(priceNames: string[], side: LegMarket['side']): numbe
   return -1;
 }
 
-// Return the leg's de-vigged win-probability in [0,1], or null if no market matched. Null
-// tells the engine to hold the leg's prior pct rather than snap it to a wrong value.
+// The signed line encoded in MarketParameters (the last number in the string).
+function lineOf(params: string): number | null {
+  const matches = params.match(/-?\d+(?:\.\d+)?/g);
+  if (!matches || matches.length === 0) return null;
+  return Number(matches[matches.length - 1]);
+}
+
+// Which participant a market scores, from the MarketParameters tokens. A market with no
+// participant token (or a "total" / "match" token) is the aggregate market.
+function participantOf(params: string): 'home' | 'away' | 'total' {
+  const p = params.toLowerCase();
+  if (/(participant1|\bp1\b|home)/.test(p)) return 'home';
+  if (/(participant2|\bp2\b|away)/.test(p)) return 'away';
+  return 'total';
+}
+
+function periodOf(marketPeriod: string): 'match' | 'firstHalf' {
+  return /(h1|1h|first|1st)/i.test(marketPeriod) ? 'firstHalf' : 'match';
+}
+
+function familyMatches(superType: string, kind: LegMarket['kind']): boolean {
+  switch (kind) {
+    case 'totalGoals':
+    case 'teamGoals':
+      return superType.includes('OVERUNDER') || superType.includes('OVER_UNDER') || superType.includes('TOTAL');
+    case 'matchResult':
+      return superType.includes('1X2') || superType.includes('RESULT') || superType.includes('MATCHODDS');
+    case 'asianHandicap':
+      return superType.includes('HANDICAP');
+    default:
+      return false;
+  }
+}
+
+// Return the leg's de-vigged win-probability in [0,1], or null if no market matched. Null tells
+// the engine to hold the leg's prior pct rather than snap it to a wrong value.
 export function matchMarketPct(rawOdds: unknown, leg: LegDescriptor): number | null {
-  const markets: MarketLike[] = [];
+  const markets: Market[] = [];
   collectMarkets(rawOdds, markets);
   if (markets.length === 0) return null;
 
-  // TODO(real-sample): filter `markets` down to the one whose MarketParameters encode this
-  // leg's kind + line (+ team/period). For now, pick the first market that exposes a price
-  // name matching the leg's side and read that Pct entry.
+  const m = leg.market;
+  const wantPeriod = m.period === 'firstHalf' ? 'firstHalf' : 'match';
+  const wantParticipant = m.kind === 'teamGoals' ? m.team ?? 'home' : 'total';
+  const lineScoped = m.kind === 'totalGoals' || m.kind === 'teamGoals' || m.kind === 'asianHandicap';
+
   for (const mk of markets) {
-    const idx = priceIndexForSide(mk.priceNames, leg.market.side);
-    if (idx >= 0 && idx < mk.pct.length) {
-      return normalizePct(mk.pct[idx]);
+    if (!familyMatches(mk.superType, m.kind)) continue;
+    if (periodOf(mk.period) !== wantPeriod) continue;
+    if ((m.kind === 'totalGoals' || m.kind === 'teamGoals') && participantOf(mk.params) !== wantParticipant) continue;
+    if (lineScoped && m.line !== undefined) {
+      const line = lineOf(mk.params);
+      if (line === null || Math.abs(Math.abs(line) - m.line) > 1e-6) continue;
     }
+    const idx = priceIndexForSide(mk.priceNames, m.side);
+    if (idx >= 0 && idx < mk.pct.length) return normalizePct(mk.pct[idx]);
   }
   return null;
 }

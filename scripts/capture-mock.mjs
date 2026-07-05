@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// Capture the app's mock feed to a MatchTick JSONL, one tick per line. This gives the replay
-// server a real out-of-the-box fixture whose shape is guaranteed identical to the app feed,
-// because it IS the app feed: app/src/mock/mockFeed.ts is bundled and run as-is. Read-only on
-// app/; writes only to data/. Regenerate after the UI agent changes the mock.
+// Capture the app's mock feed to a MatchTick JSONL, one tick per line, by bundling and running
+// app/src/mock/mockFeed.ts as-is. This is a convenience dump of pre-built MatchTicks; the canonical
+// public replay is data/sample-match.jsonl, produced by scripts/generate-sample-match.mjs as RAW
+// { t, odds, scores } snapshots so replay exercises the real oddsMapping / scoreMapping path.
+// Read-only on app/; writes only to data/.
 //
-// Usage: node scripts/capture-mock.mjs [--out data/sample-match.jsonl] [--tick-ms 1]
+// Usage: node scripts/capture-mock.mjs [--out data/mock-ticks.jsonl] [--tick-ms 1]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -17,7 +18,7 @@ const ENTRY = path.join(ROOT, 'app', 'src', 'mock', 'mockFeed.ts');
 const ESBUILD = path.join(ROOT, 'app', 'node_modules', '.bin', 'esbuild');
 
 const args = parseArgs(process.argv.slice(2));
-const OUT = path.resolve(args.out || path.join(ROOT, 'data', 'sample-match.jsonl'));
+const OUT = path.resolve(args.out || path.join(ROOT, 'data', 'mock-ticks.jsonl'));
 const TICK_MS = Number(args['tick-ms'] || 1);
 
 if (!fs.existsSync(ENTRY)) {

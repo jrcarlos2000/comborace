@@ -84,12 +84,14 @@ function InviteGate({ onBack, onEnter }: { onBack: () => void; onEnter: (code: s
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col px-6 pb-10 pt-14">
+    <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col px-6 pb-10 pt-14">
       <BackBar onBack={onBack} label="Private lobby" />
       <div className="flex flex-1 flex-col justify-center">
-        <div className="rounded-3xl border border-white/10 bg-track-panel p-6">
-          <h2 className="text-xl font-black text-white">Join with an invite</h2>
-          <p className="mt-1 text-sm text-white/50">Combo Race lobbies are invite-only. Ask your group for the code.</p>
+        <div className="rounded-3xl border border-white/10 bg-track-panel p-6 shadow-card-dark">
+          <h2 className="text-xl font-black tracking-tight text-white">Join with an invite</h2>
+          <p className="mt-1.5 text-sm leading-relaxed text-white/50">
+            Combo Race lobbies are invite-only. Ask your group for the code.
+          </p>
           <input
             value={code}
             onChange={(e) => {
@@ -99,16 +101,14 @@ function InviteGate({ onBack, onEnter }: { onBack: () => void; onEnter: (code: s
             onKeyDown={(e) => e.key === 'Enter' && submit()}
             placeholder="enter code"
             autoCapitalize="characters"
-            className={`mt-5 w-full rounded-2xl border bg-black/30 px-4 py-3.5 text-center text-lg font-black uppercase tracking-[0.3em] text-white outline-none transition placeholder:text-white/25 placeholder:tracking-normal ${
+            aria-label="Lobby invite code"
+            className={`mt-5 w-full rounded-xl border bg-black/30 px-4 py-3.5 text-center text-lg font-black uppercase tracking-[0.3em] text-white outline-none transition duration-150 placeholder:text-white/25 placeholder:tracking-normal focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-track-base ${
               error ? 'border-crash shake' : 'border-white/10 focus:border-brand'
             }`}
           />
           {error && <p className="mt-2 text-center text-xs font-semibold text-crash">Wrong code. Try {JOIN_CODE}.</p>}
           {!error && <p className="mt-2 text-center text-[11px] text-white/30">demo code: {JOIN_CODE}</p>}
-          <button
-            onClick={submit}
-            className="mt-4 w-full rounded-2xl bg-brand py-3.5 text-sm font-bold text-white transition active:scale-[0.98]"
-          >
+          <button onClick={submit} className="btn-primary mt-4 w-full py-3.5 text-sm">
             Join lobby
           </button>
         </div>
@@ -117,10 +117,7 @@ function InviteGate({ onBack, onEnter }: { onBack: () => void; onEnter: (code: s
           or
           <span className="h-px flex-1 bg-white/10" />
         </div>
-        <button
-          onClick={host}
-          className="w-full rounded-2xl border border-white/12 bg-white/[0.04] py-3.5 text-sm font-bold text-white/85 transition active:scale-[0.98]"
-        >
+        <button onClick={host} className="btn-secondary w-full py-3.5 text-sm">
           Host a new lobby
         </button>
       </div>
@@ -154,18 +151,18 @@ function DraftBoard({
   const isCopied = (addr: string) => pick?.kind === 'copy' && pick.friend.address === addr;
 
   return (
-    <div className="flex min-h-[100dvh] flex-col px-4 pb-28 pt-14">
+    <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col px-4 pb-28 pt-14">
       <BackBar onBack={onBack} label="Pick your car" />
 
       <button
         onClick={copyCode}
-        className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-left transition active:scale-[0.99]"
+        className="focus-ring mb-5 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left transition duration-150 hover:border-white/20 hover:bg-white/[0.05] active:scale-[0.99]"
       >
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-white/35">lobby code</div>
-          <div className="font-mono text-lg font-black tracking-[0.3em] text-white">{code}</div>
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-white/45">lobby code</div>
+          <div className="mt-0.5 font-mono text-lg font-black tracking-[0.3em] text-white">{code}</div>
         </div>
-        <span className="rounded-lg bg-brand/20 px-3 py-1.5 text-xs font-bold text-brand">
+        <span className="inline-flex items-center gap-1 rounded-lg bg-brand/15 px-2.5 py-1.5 text-xs font-bold text-brand ring-1 ring-brand/25">
           {copied ? 'copied' : 'share'}
         </span>
       </button>
@@ -183,21 +180,28 @@ function DraftBoard({
       </div>
 
       <SectionLabel>Pick your car (your turn)</SectionLabel>
-      <div className="grid grid-cols-2 gap-2">
-        {remaining.map((combo) => (
-          <CandidateCard
-            key={combo.id}
-            combo={combo}
-            selected={isPicked(combo.id)}
-            onSelect={() => setPick({ kind: 'draft', combo })}
-          />
-        ))}
-      </div>
+      {remaining.length === 0 ? (
+        <div className="surface-card px-4 py-8 text-center">
+          <div className="text-sm font-bold text-white/70">Every car is taken</div>
+          <div className="mt-1 text-xs text-white/40">Copy a friend&apos;s car above to join the grid.</div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2.5">
+          {remaining.map((combo) => (
+            <CandidateCard
+              key={combo.id}
+              combo={combo}
+              selected={isPicked(combo.id)}
+              onSelect={() => setPick({ kind: 'draft', combo })}
+            />
+          ))}
+        </div>
+      )}
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-track-bg/90 px-4 pb-6 pt-3 backdrop-blur-md">
         <div className="mx-auto flex max-w-md items-center gap-3">
-          <div className="flex-1">
-            <div className="text-[10px] uppercase tracking-widest text-white/35">your car</div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-white/45">your car</div>
             <div className="truncate text-sm font-bold text-white">
               {pick
                 ? pick.kind === 'draft'
@@ -209,7 +213,7 @@ function DraftBoard({
           <button
             disabled={!pick}
             onClick={() => pick && onLockIn(pick)}
-            className="rounded-2xl bg-brand px-5 py-3 text-sm font-bold text-white transition active:scale-[0.98] disabled:opacity-30"
+            className="btn-primary shrink-0 px-5 py-3 text-sm"
           >
             Chip in ${BUY_IN} &amp; race
           </button>
@@ -230,11 +234,11 @@ function FriendRow({ racer, copied, onCopy }: { racer: Racer; copied: boolean; o
           <span className="truncate text-sm font-bold" style={{ color: c.color }}>
             {c.handle}
           </span>
-          <span className="rounded bg-white/5 px-1 py-px text-[10px] font-semibold text-white/45">{friendName}</span>
+          <span className="rounded-md bg-white/5 px-1.5 py-px text-[10px] font-semibold text-white/45">{friendName}</span>
         </div>
-        <div className="mt-0.5 flex flex-wrap gap-1">
+        <div className="mt-1 flex flex-wrap gap-1">
           {c.legs.map((l) => (
-            <span key={l.id} className="rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-medium text-white/55">
+            <span key={l.id} className="rounded-md bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-medium text-white/55">
               {l.short}
             </span>
           ))}
@@ -242,8 +246,8 @@ function FriendRow({ racer, copied, onCopy }: { racer: Racer; copied: boolean; o
       </div>
       <button
         onClick={onCopy}
-        className={`shrink-0 rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition active:scale-95 ${
-          copied ? 'bg-brand text-white' : 'bg-white/[0.06] text-white/70'
+        className={`focus-ring shrink-0 rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition duration-150 active:scale-95 ${
+          copied ? 'bg-brand text-white shadow-primary' : 'bg-white/[0.06] text-white/70 hover:bg-white/[0.1] hover:text-white/90'
         }`}
       >
         {copied ? 'copied' : 'copy car'}
@@ -256,8 +260,11 @@ function CandidateCard({ combo, selected, onSelect }: { combo: ComboDef; selecte
   return (
     <button
       onClick={onSelect}
-      className={`rounded-2xl border p-3 text-left transition active:scale-[0.98] ${
-        selected ? 'border-brand bg-brand/10 shadow-car-select' : 'border-white/8 bg-track-panel/60'
+      aria-pressed={selected}
+      className={`focus-ring rounded-2xl border p-3 text-left transition duration-150 active:scale-[0.98] ${
+        selected
+          ? 'border-brand bg-brand/10 shadow-car-select'
+          : 'border-white/10 bg-track-panel/60 hover:border-white/20 hover:bg-track-panel/80'
       }`}
     >
       <div className="flex items-center gap-2">
@@ -267,14 +274,14 @@ function CandidateCard({ combo, selected, onSelect }: { combo: ComboDef; selecte
         </span>
       </div>
       <div className="mt-1 text-[11px] text-white/45">{combo.tagline}</div>
-      <div className="mt-2 flex flex-wrap gap-1">
+      <div className="mt-2.5 flex flex-wrap gap-1">
         {combo.legs.map((l) => (
-          <span key={l.id} className="rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-medium text-white/60">
+          <span key={l.id} className="rounded-md bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-medium text-white/60">
             {l.short}
           </span>
         ))}
       </div>
-      <div className="mt-2">
+      <div className="mt-2.5">
         <DifficultyPill multiplier={combo.multiplier} />
       </div>
     </button>
@@ -287,19 +294,15 @@ function DifficultyPill({ multiplier }: { multiplier: number }) {
     tone === 'safe'
       ? 'bg-cash/15 text-cash ring-cash/30'
       : tone === 'even'
-        ? 'bg-white/8 text-white/70 ring-white/15'
+        ? 'bg-white/[0.08] text-white/70 ring-white/15'
         : tone === 'risky'
           ? 'bg-yellow-400/15 text-yellow-400 ring-yellow-400/30'
           : 'bg-crash/15 text-crash ring-crash/30';
-  return (
-    <span className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ring-1 ${cls}`}>
-      {text}
-    </span>
-  );
+  return <span className={`pill ${cls}`}>{text}</span>;
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div className="mb-2 mt-5 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35">{children}</div>;
+  return <div className="mb-2.5 mt-6 text-[11px] font-bold uppercase tracking-[0.25em] text-white/45">{children}</div>;
 }
 
 function BackBar({ onBack, label }: { onBack: () => void; label: string }) {
@@ -307,7 +310,7 @@ function BackBar({ onBack, label }: { onBack: () => void; label: string }) {
     <div className="mb-4 flex items-center gap-3">
       <button
         onClick={onBack}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition active:scale-95"
+        className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition duration-150 hover:border-white/20 hover:bg-white/[0.08] hover:text-white active:scale-95"
         aria-label="Back"
       >
         &#8592;

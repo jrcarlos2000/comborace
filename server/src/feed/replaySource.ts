@@ -11,7 +11,9 @@ import type { RawSnapshot } from '../txline/index.js';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_SAMPLE = path.resolve(HERE, '..', '..', '..', 'data', 'sample-match.jsonl');
 
-const MOCK_TICK_MS = 1000;
+// Fallback per-tick spacing when a raw record carries no timestamp delta. Kept short so the
+// whole arc lands inside a minute of watch time; the render smoothing absorbs the faster ticks.
+const MOCK_TICK_MS = 450;
 
 type Record =
   | { kind: 'tick'; tick: MatchTick }

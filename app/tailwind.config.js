@@ -16,6 +16,7 @@ export default {
       boxShadow: {
         button: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px rgba(240, 240, 240, 0.8) inset',
         primary: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px #8E75EF inset',
+        cta: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px #8E75EF inset, 0px 16px 34px -12px rgba(126, 93, 254, 0.55)',
         'primary-inset': 'inset 0px -5px 4px 0px #8E75EF',
         'pill-highlight': 'inset 2px 3px 4px 0px rgba(255, 255, 255, 0.56)',
         'card-drop': '0px 0px 56.6px 0px rgba(0, 0, 0, 0.19)',

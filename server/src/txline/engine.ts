@@ -18,7 +18,7 @@ export class MatchEngine {
   private legStatus = new Map<string, LegStatus>();
   private carStatus = new Map<string, CarStatus>();
   private lastLegPct = new Map<string, number>();
-  private prev: DecodedScore = { minute: 0, home: 0, away: 0, corners: 0, cards: 0, isFullTime: false, ended: false };
+  private prev: DecodedScore = { minute: 0, home: 0, away: 0, h1Home: 0, h1Away: 0, corners: 0, cards: 0, isFullTime: false, ended: false };
   private kickedOff = false;
   private halftimeSent = false;
   private fulltimeSent = false;

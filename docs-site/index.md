@@ -28,7 +28,7 @@ features:
     details: A leg loses and your car detonates on the spot. All legs win and it crosses the line. A real goal sends one car home while a rival's explodes in the same frame.
   - icon: 👀
     title: For people who only watch with money on it
-    details: No wallet and no live match needed to look. Tap "Watch a race" and drop straight into a real recorded game, cars moving in under five seconds.
+    details: No wallet and no live match needed to look. Tap "Watch a race" and drop straight into a recorded replay (a scripted match in this build), cars moving in under five seconds.
   - icon: 🔗
     title: No house, settled on-chain
     details: A private, equal buy-in USDC pool with no bookmaker. The pot settles on Solana from the verifiable TxLINE result. Nobody custodies funds or approves a payout by hand.

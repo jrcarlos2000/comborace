@@ -7,9 +7,12 @@ import puppeteer from 'puppeteer-core';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const appDir = resolve(__dirname, '..');
 const round = process.argv[2] ?? '1';
+const group = process.env.SHOOT_GROUP ?? '';
 const PORT = 4180;
 const BASE = `http://127.0.0.1:${PORT}`;
-const outDir = resolve(appDir, 'screenshots', `round${round}`);
+const outDir = group
+  ? resolve(appDir, 'screenshots', group, `round${round}`)
+  : resolve(appDir, 'screenshots', `round${round}`);
 mkdirSync(outDir, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

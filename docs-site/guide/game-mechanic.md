@@ -23,18 +23,18 @@ Every car starts from the same line regardless of how hard its combo is, so an e
 
 Legs do not all wait for the final whistle. Each one settles at its natural time. Some can be won early, some can be lost early, and the rest are decided at full time.
 
+Every leg is a goals market TxLINE prices with a de-vigged `Pct`: total goals over/under, 1X2, Asian handicap, team totals and first-half goals. Corners, cards and both-teams-to-score carry no `Pct` on the feed, so they are not offered.
+
 | Leg | Can win early | Can lose early | Otherwise settled |
 |---|---|---|---|
-| Over X (goals, corners, cards) | yes, when the target is hit | no | loses at full time |
-| Under X | no | yes, when the target is exceeded | wins at full time |
-| Both teams to score, yes | yes, once both have scored | no | loses at full time |
-| Both teams to score, no | no | yes, once both have scored | wins at full time |
+| Over X total goals | yes, when the target is hit | no | loses at full time |
+| Under X total goals | no | yes, when the target is exceeded | wins at full time |
+| Team over X goals | yes, once they score enough | no | loses at full time |
 | Match result (1X2) | no | no | wins or loses at full time |
-| Team to score | yes, once they score | no | loses at full time |
-| Correct score | no | yes, once exceeded | at full time |
+| Asian handicap | no | no | wins or loses at full time |
 | First-half over/under | yes | yes | at half-time |
 
-Staggering the legs this way spreads the crashes and cashes across the whole match instead of bunching them at the end. A first-half Over can cash around the twentieth minute, a corners line late, a match result at the whistle.
+Staggering the legs this way spreads the crashes and cashes across the whole match instead of bunching them at the end. A first-half Over can cash around the twentieth minute, a total Over on a late goal, a match result at the whistle.
 
 ## No extra time
 
@@ -44,7 +44,7 @@ Full time is 90 minutes plus stoppage only. Extra time and penalty shootouts do 
 
 Two rules keep the finish from fizzling.
 
-- **Best multiplier wins.** If two or more cars are still alive at full time, the pot does not split evenly. It goes to the highest live multiplier. Ties break on a stat that runs to the whistle, such as a total-corners line, closest without busting.
+- **Best multiplier wins.** If two or more cars are still alive at full time, the pot does not split evenly. It goes to the highest live multiplier. Ties break on the live "if it ended now" payout, then the harder combo.
 - **The pot never orphans.** In the rare case where every car crashes, the pot goes to the car that reached the highest peak probability during the match. The pool is always payable, and the settlement is total.
 
 ## The three problems this solves

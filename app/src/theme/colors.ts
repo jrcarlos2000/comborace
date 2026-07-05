@@ -18,6 +18,9 @@ const colors = {
   // Dark race-track surfaces. A near-black with a faint purple-blue cast so the brand reads
   // through the whole arena instead of a flat neutral black.
   track: {
+    // `base` is the true page background (the deepest tone); `bg` is the raised surface a
+    // step lighter. Focus-ring offsets read against `base` so the ring sits on the real page.
+    base: "#06060C",
     bg: "#0A0A12",
     panel: "#12121F",
     lane: "#0E0E1A",
@@ -116,6 +119,7 @@ const colors = {
 export const crashRgb = "255,87,87";
 export const cashRgb = "47,219,153";
 export const goldRgb = "224,176,82";
+export const brandRgb = "126,93,254";
 
 export interface CarColor {
   name: string;

@@ -9,7 +9,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4");
 
 #[program]
 pub mod combo_race {

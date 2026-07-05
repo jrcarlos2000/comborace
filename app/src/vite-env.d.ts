@@ -12,3 +12,7 @@ interface ImportMeta {
 // Build-time toggle injected by vite.config.ts. `true` compiles in the Phantom wallet and the
 // real on-chain client; `false` (the default) ships the wallet-free mock-only bundle.
 declare const __COMBORACE_REAL_CLIENT__: boolean;
+
+// Build-time toggle injected by vite.config.ts. `true` points "Watch a race" at the WebSocket
+// server feed (Docker / live build); `false` (the default) runs a client-side replay.
+declare const __COMBORACE_LIVE_FEED__: boolean;

@@ -1,122 +1,141 @@
 import type { DecodedScore, LegDescriptor } from './types.js';
 import type { LegStatus } from '../feed/types.js';
 
-// TxLINE score encoding -> match state -> leg resolution.
+// TxLINE soccer score encoding -> match state -> leg resolution.
 //
-// The scores feed encodes goals, corners, yellow/red cards per team and per half under
-// keys of the form period*1000 + base_key (base 1-8), plus a match-phase code (19 codes,
-// 5 = Ended, 13 = Ended after penalty shootout). See docs/TXLINE_CAPABILITIES.md.
-//
-// TODO(real-sample): the base_key numbers below are placeholders. Once tonight's recorded
-// match lands, replace the KEY_* constants and the field probing in decodeScore with the
-// exact keys from a real /api/scores/snapshot payload, then delete this note.
+// Per docs.yaml the scores payload carries a SoccerFixtureScore under `scoreSoccer`, with a
+// `Participant1` and `Participant2`, each a SoccerTotalScore keyed by period (H1, HT, H2, ET1,
+// ET2, PE, ETTotal, Total). Each period is a SoccerScore { Goals, YellowCards, RedCards, Corners }.
+// `participant1IsHome` says which participant is the home side. Match phase is a SoccerFixtureStatus
+// (a one-key object, e.g. { F: {} } for finished, { H2: {} } for the second half) mirrored in the
+// `gameState` string. We read the Total goals for full-match markets and the H1 goals for first-half
+// markets, then resolve each leg against that.
 
-const KEY_GOALS = 1;
-const KEY_CORNERS = 2;
-const KEY_YELLOW = 3;
-const KEY_RED = 4;
+const ENDED_STATUS = new Set(['F', 'FET', 'FPE', 'END', 'AET', 'AP']);
 
-const PHASE_ENDED = 5;
-const PHASE_ENDED_PENS = 13;
-
-// Full-time whistle, aligned with app/src/mock/probability.ts WHISTLE (90 + typical stoppage).
+// Full-time whistle at 90 plus typical stoppage, aligned with app/src/mock/probability.ts.
 export const WHISTLE = 93;
+// First-half whistle at 45 plus typical stoppage.
+export const FIRST_HALF_WHISTLE = 47;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value !== null && typeof value === 'object' ? (value as Record<string, unknown>) : null;
 }
 
-function numAt(rec: Record<string, unknown> | null, keys: string[]): number {
-  if (!rec) return 0;
+// Case-insensitive property read across a few candidate keys.
+function pick(rec: Record<string, unknown> | null, keys: string[]): unknown {
+  if (!rec) return undefined;
+  const lower = new Map(Object.keys(rec).map((k) => [k.toLowerCase(), k]));
   for (const k of keys) {
-    const v = rec[k];
-    if (typeof v === 'number' && Number.isFinite(v)) return v;
-    if (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v))) return Number(v);
+    const hit = lower.get(k.toLowerCase());
+    if (hit !== undefined) return rec[hit];
   }
+  return undefined;
+}
+
+function num(value: unknown): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value))) return Number(value);
   return 0;
 }
 
-// Sum a base_key across both halves (period 1 and 2) for a given team subtree.
-function sumStat(team: Record<string, unknown> | null, base: number): number {
-  if (!team) return 0;
-  const p1 = numAt(team, [String(1000 + base), `p1_${base}`, `h1_${base}`]);
-  const p2 = numAt(team, [String(2000 + base), `p2_${base}`, `h2_${base}`]);
-  const flat = numAt(team, [String(base), `k${base}`]);
-  return p1 + p2 + flat;
+function boolAt(rec: Record<string, unknown> | null, keys: string[], fallback: boolean): boolean {
+  const v = pick(rec, keys);
+  if (typeof v === 'boolean') return v;
+  if (typeof v === 'string') return v === 'true' || v === '1';
+  return fallback;
+}
+
+// Goals in one period subtree (H1, Total, ...) of a participant's SoccerTotalScore.
+function periodGoals(total: Record<string, unknown> | null, period: string): number {
+  const sub = asRecord(pick(total, [period]));
+  return num(pick(sub, ['Goals']));
+}
+
+function periodStat(total: Record<string, unknown> | null, period: string, stat: string): number {
+  const sub = asRecord(pick(total, [period]));
+  return num(pick(sub, [stat]));
+}
+
+// The match-phase code, read from the one-key SoccerFixtureStatus object or the gameState string.
+function statusCode(root: Record<string, unknown> | null): string {
+  const status = asRecord(pick(root, ['statusSoccerId', 'statusId', 'status']));
+  if (status) {
+    const keys = Object.keys(status);
+    if (keys.length > 0) return keys[0].toUpperCase();
+  }
+  const gameState = pick(root, ['gameState', 'state']);
+  if (typeof gameState === 'string' && gameState.trim() !== '') return gameState.toUpperCase();
+  return '';
 }
 
 // Decode a raw scores payload into the feed-agnostic match state the leg logic consumes.
-// Defensive: every unknown shape degrades to zeros / not-ended rather than throwing, so a
-// surprise payload never crashes the stream. Kept loose until the real keys are confirmed.
+// Defensive: an unexpected shape degrades to zeros / not-ended rather than throwing, so a
+// surprise payload never crashes the stream.
 export function decodeScore(rawScores: unknown, fallbackMinute: number): DecodedScore {
   const root = asRecord(rawScores);
 
-  const minute = numAt(root, ['minute', 'clock', 'matchMinute', 'time_minutes']) || fallbackMinute;
+  const clock = asRecord(pick(root, ['clock', 'clockSoccer']));
+  const clockMinute = clock ? Math.floor(num(pick(clock, ['seconds'])) / 60) : 0;
+  const minute = num(pick(root, ['minute', 'matchMinute'])) || clockMinute || fallbackMinute;
 
-  const homeTeam =
-    asRecord(root?.['home']) ?? asRecord(root?.['p1']) ?? asRecord(root?.['team1']) ?? asRecord(root?.['homeTeam']);
-  const awayTeam =
-    asRecord(root?.['away']) ?? asRecord(root?.['p2']) ?? asRecord(root?.['team2']) ?? asRecord(root?.['awayTeam']);
+  const soccer = asRecord(pick(root, ['scoreSoccer', 'score', 'scoreSoccerId']));
+  const p1IsHome = boolAt(root, ['participant1IsHome'], true);
+  const p1 = asRecord(pick(soccer, ['Participant1']));
+  const p2 = asRecord(pick(soccer, ['Participant2']));
+  const homeTotal = p1IsHome ? p1 : p2;
+  const awayTotal = p1IsHome ? p2 : p1;
 
-  const home =
-    sumStat(homeTeam, KEY_GOALS) || numAt(root, ['homeGoals', 'p1Goals', 'homeScore', 'score_home']);
-  const away =
-    sumStat(awayTeam, KEY_GOALS) || numAt(root, ['awayGoals', 'p2Goals', 'awayScore', 'score_away']);
+  const home = periodGoals(homeTotal, 'Total');
+  const away = periodGoals(awayTotal, 'Total');
+  const h1Home = periodGoals(homeTotal, 'H1');
+  const h1Away = periodGoals(awayTotal, 'H1');
 
-  const corners =
-    sumStat(homeTeam, KEY_CORNERS) + sumStat(awayTeam, KEY_CORNERS) ||
-    numAt(root, ['corners', 'totalCorners', 'cornersTotal']);
-
+  const corners = periodStat(homeTotal, 'Total', 'Corners') + periodStat(awayTotal, 'Total', 'Corners');
   const cards =
-    sumStat(homeTeam, KEY_YELLOW) +
-      sumStat(awayTeam, KEY_YELLOW) +
-      sumStat(homeTeam, KEY_RED) +
-      sumStat(awayTeam, KEY_RED) || numAt(root, ['cards', 'totalCards', 'bookings']);
+    periodStat(homeTotal, 'Total', 'YellowCards') +
+    periodStat(homeTotal, 'Total', 'RedCards') +
+    periodStat(awayTotal, 'Total', 'YellowCards') +
+    periodStat(awayTotal, 'Total', 'RedCards');
 
-  const phase = numAt(root, ['phase', 'gamePhase', 'phaseCode', 'status']);
-  const ended = phase === PHASE_ENDED || phase === PHASE_ENDED_PENS;
+  const ended = ENDED_STATUS.has(statusCode(root));
   const isFullTime = ended || minute >= WHISTLE;
 
-  return { minute, home, away, corners, cards, isFullTime, ended };
+  return { minute, home, away, h1Home, h1Away, corners, cards, isFullTime, ended };
 }
 
-function overUnder(count: number, line: number, side: 'over' | 'under', isFullTime: boolean): LegStatus {
+function overUnder(count: number, line: number, side: 'over' | 'under', resolved: boolean): LegStatus {
   const need = Math.floor(line) + 1;
   if (side === 'over') {
     if (count >= need) return 'won';
-    return isFullTime ? 'lost' : 'pending';
+    return resolved ? 'lost' : 'pending';
   }
   if (count > Math.floor(line)) return 'lost';
-  return isFullTime ? 'won' : 'pending';
+  return resolved ? 'won' : 'pending';
 }
 
 // Resolve one leg against the decoded state, following the natural-settlement table in
-// docs/GAME_DESIGN.md (Over can win early, Under can lose early, 1X2 at the whistle, etc).
-// Mirrors the status branches in app/src/mock/probability.ts.
+// docs/GAME_DESIGN.md (Over can win early, Under can lose early, 1X2 and handicap at the whistle,
+// first-half lines at half time). Mirrors the status branches in app/src/mock/probability.ts.
 export function resolveLeg(leg: LegDescriptor, s: DecodedScore): LegStatus {
   const m = leg.market;
+  const firstHalf = m.period === 'firstHalf';
+  const firstHalfOver = firstHalf && (s.minute >= FIRST_HALF_WHISTLE || s.isFullTime);
+
   switch (m.kind) {
-    case 'totalGoals':
-      return overUnder(s.home + s.away, m.line ?? 0, m.side === 'under' ? 'under' : 'over', s.isFullTime);
-    case 'teamGoals':
+    case 'totalGoals': {
+      const total = firstHalf ? s.h1Home + s.h1Away : s.home + s.away;
+      return overUnder(total, m.line ?? 0, m.side === 'under' ? 'under' : 'over', firstHalf ? firstHalfOver : s.isFullTime);
+    }
+    case 'teamGoals': {
+      const home = firstHalf ? s.h1Home : s.home;
+      const away = firstHalf ? s.h1Away : s.away;
       return overUnder(
-        m.team === 'away' ? s.away : s.home,
+        m.team === 'away' ? away : home,
         m.line ?? 0,
         m.side === 'under' ? 'under' : 'over',
-        s.isFullTime,
+        firstHalf ? firstHalfOver : s.isFullTime,
       );
-    case 'totalCorners':
-      return overUnder(s.corners, m.line ?? 0, m.side === 'under' ? 'under' : 'over', s.isFullTime);
-    case 'totalCards':
-      return overUnder(s.cards, m.line ?? 0, m.side === 'under' ? 'under' : 'over', s.isFullTime);
-    case 'btts': {
-      const both = s.home >= 1 && s.away >= 1;
-      if (m.side === 'no') {
-        if (both) return 'lost';
-        return s.isFullTime ? 'won' : 'pending';
-      }
-      if (both) return 'won';
-      return s.isFullTime ? 'lost' : 'pending';
     }
     case 'matchResult': {
       if (!s.isFullTime) return 'pending';
@@ -124,6 +143,14 @@ export function resolveLeg(leg: LegDescriptor, s: DecodedScore): LegStatus {
       if (m.side === 'home') return diff > 0 ? 'won' : 'lost';
       if (m.side === 'away') return diff < 0 ? 'won' : 'lost';
       return diff === 0 ? 'won' : 'lost';
+    }
+    case 'asianHandicap': {
+      if (!s.isFullTime) return 'pending';
+      const team = m.team === 'away' ? 'away' : 'home';
+      const teamGoals = team === 'away' ? s.away : s.home;
+      const oppGoals = team === 'away' ? s.home : s.away;
+      const margin = teamGoals - oppGoals + (m.line ?? 0);
+      return margin > 0 ? 'won' : 'lost';
     }
     default:
       return 'pending';
