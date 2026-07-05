@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+**/dist-real
+.git
+.gitignore
+program
+docs
+*.md
+**/*.log
+scripts

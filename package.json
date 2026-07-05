@@ -1,0 +1,14 @@
+{
+  "name": "comborace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Betting you can watch - a live parlay race on Solana, powered by TxLINE. World Cup hackathon (Consumer & Fan Experiences).",
+  "scripts": {
+    "record": "node scripts/record-match.mjs",
+    "replay": "node scripts/replay-match.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

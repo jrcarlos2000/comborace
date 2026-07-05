@@ -1,0 +1,26 @@
+{
+  "name": "comborace-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ComboRace match server: serves the built app and streams MatchTicks over WebSocket (replay or live TxLINE).",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "replay": "tsx src/index.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
