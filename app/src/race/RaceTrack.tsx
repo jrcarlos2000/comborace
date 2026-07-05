@@ -3,6 +3,7 @@ import { COMBOS, type ComboDef } from '../mock/combos';
 import type { CarTick, MatchTick } from '../mock/mockFeed';
 import type { ParticlesHandle } from './Particles';
 import { clamp01, landingBounce } from '../anim/easing';
+import { carSpriteFor } from './carSprites';
 
 const SPRITE_W = 52;
 
@@ -19,6 +20,7 @@ interface RenderState {
   shakeT: number;
   cashT: number;
   opacity: number;
+  has3d: boolean;
 }
 
 function spriteCenter(el: HTMLElement): { x: number; y: number } {
@@ -50,11 +52,26 @@ export function RaceTrack({
   const spriteEls = useRef<Map<string, HTMLDivElement>>(new Map());
   const hullEls = useRef<Map<string, HTMLElement>>(new Map());
   const brakeEls = useRef<Map<string, HTMLElement>>(new Map());
+  const heroEls = useRef<Map<string, HTMLElement>>(new Map());
+  const crashEls = useRef<Map<string, HTMLElement>>(new Map());
   const rs = useRef<Map<string, RenderState>>(new Map());
   const carsRef = useRef<CarTick[]>([]);
 
   const top = combos.slice(0, 2);
   const bottom = combos.slice(2, 4);
+
+  // Warm the crash sheets into the browser cache shortly after the race is up (they are the
+  // heaviest sprite and only needed on an event) so the first crash swaps frames with no fetch
+  // hitch, while the initial paint only pays for the light hero PNGs.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      for (const combo of combos) {
+        const sprite = carSpriteFor(combo.colorRgb);
+        if (sprite) new Image().src = sprite.crashSheet;
+      }
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [combos]);
 
   useEffect(() => {
     const measure = () => {
@@ -93,6 +110,7 @@ export function RaceTrack({
             shakeT: 0,
             cashT: 0,
             opacity: 1,
+            has3d: carSpriteFor(car.colorRgb) !== null,
           };
           rs.current.set(car.id, s);
         }
@@ -111,10 +129,20 @@ export function RaceTrack({
         if (!el) continue;
 
         if (s.phase === 'crashing') {
-          s.opacity = Math.max(0, 1 - Math.max(0, s.phaseT - 0.12) / 0.6);
-          if (s.phaseT > 0.9) {
-            s.phase = 'crashed';
-            s.opacity = 0.14;
+          if (s.has3d) {
+            // Hold the sprite readable through its tumble sequence, then settle to a dim wreck
+            // that keeps the last crash frame parked at the crash zone.
+            s.opacity = s.phaseT < 0.95 ? 1 : Math.max(0.5, 1 - (s.phaseT - 0.95) / 0.5);
+            if (s.phaseT > 1.45) {
+              s.phase = 'crashed';
+              s.opacity = 0.5;
+            }
+          } else {
+            s.opacity = Math.max(0, 1 - Math.max(0, s.phaseT - 0.12) / 0.6);
+            if (s.phaseT > 0.9) {
+              s.phase = 'crashed';
+              s.opacity = 0.14;
+            }
           }
         }
         if (s.phase === 'cashing' && s.pos > 0.985) {
@@ -180,6 +208,17 @@ export function RaceTrack({
         if (el && car) {
           const c = spriteCenter(el);
           particles.current?.explode(c.x, c.y, car.colorRgb);
+          // Swap the rendered hero for its crash-tumble sheet. The sheet plays once via a CSS
+          // steps() animation on the crash element; toggling the class imperatively keeps it
+          // clear of React's className on the sprite, which never sees these two child nodes.
+          const sprite = carSpriteFor(car.colorRgb);
+          const hero = heroEls.current.get(ev.carId);
+          const crash = crashEls.current.get(ev.carId);
+          if (sprite && hero && crash) {
+            hero.style.opacity = '0';
+            crash.style.backgroundImage = `url(${sprite.crashSheet})`;
+            crash.classList.add('is-tumbling');
+          }
         }
       } else if (ev.type === 'cash') {
         const s = rs.current.get(ev.carId);
@@ -200,10 +239,16 @@ export function RaceTrack({
       if (hull) hullEls.current.set(id, hull);
       const brake = el.querySelector<HTMLElement>('.brake-streak');
       if (brake) brakeEls.current.set(id, brake);
+      const hero = el.querySelector<HTMLElement>('.car-hero');
+      if (hero) heroEls.current.set(id, hero);
+      const crash = el.querySelector<HTMLElement>('.car-crash');
+      if (crash) crashEls.current.set(id, crash);
     } else {
       spriteEls.current.delete(id);
       hullEls.current.delete(id);
       brakeEls.current.delete(id);
+      heroEls.current.delete(id);
+      crashEls.current.delete(id);
     }
   };
 
@@ -272,9 +317,11 @@ function CarLane({
 }) {
   const status = car?.status ?? 'racing';
   const pct = car?.pct ?? 0;
+  const sprite = carSpriteFor(combo.colorRgb);
 
   const spriteClass = [
     'car-sprite',
+    sprite ? 'has-3d' : '',
     isYou ? 'is-you' : '',
     status === 'crashed' ? 'is-crashed' : '',
     status === 'cashed' ? 'is-finished' : '',
@@ -314,7 +361,14 @@ function CarLane({
           style={{ '--c': combo.color, '--crgb': combo.colorRgb } as CSSProperties}
         >
           <span className="car-hull">
-            <span className="car-body" />
+            {sprite ? (
+              <>
+                <img className="car-hero" src={sprite.hero} alt="" draggable={false} />
+                <span className="car-crash" aria-hidden="true" />
+              </>
+            ) : (
+              <span className="car-body" />
+            )}
           </span>
           <span className="brake-streak" aria-hidden="true" />
           <span className="car-pct">

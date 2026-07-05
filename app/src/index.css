@@ -416,6 +416,112 @@ body {
   display: none;
 }
 
+/* 3D rendered cars. The hero and crash PNGs carry the look, so the hull collapses to a plain
+   transform wrapper (the JS still squashes it for accel and brake) and the drawn body, wheels
+   and tail trail are dropped. */
+.car-sprite.has-3d .car-hull {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  animation: none;
+}
+
+.car-sprite.has-3d .car-hull::before,
+.car-sprite.has-3d .car-hull::after {
+  display: none;
+}
+
+.car-hero,
+.car-crash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.car-hero {
+  width: 58px;
+  height: auto;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
+}
+
+/* Crash-tumble sheet: 18 frames laid out horizontally at 72px each (sheet 1296px wide). The
+   steps() run pans one frame short of the full width so it lands on and holds the final wreck
+   frame instead of a blank column. */
+.car-crash {
+  width: 72px;
+  height: 54px;
+  opacity: 0;
+  background-repeat: no-repeat;
+  background-size: 1296px 54px;
+  background-position: 0 0;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+.car-crash.is-tumbling {
+  opacity: 1;
+  animation: crashSeq 0.95s steps(17) forwards;
+}
+
+@keyframes crashSeq {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -1224px;
+  }
+}
+
+.car-sprite.has-3d.is-crashed .car-hull {
+  filter: none;
+}
+
+/* Near-death, surging and finished states glow the hero, since the hull no longer carries a
+   box shadow to pulse. */
+.car-sprite.has-3d.is-redline .car-hero {
+  animation: heroRedline 0.5s ease-in-out infinite;
+}
+
+.car-sprite.has-3d.is-surge .car-hero {
+  animation: heroSurge 1s ease-in-out infinite;
+}
+
+.car-sprite.has-3d.is-finished .car-hero {
+  animation: heroFinished 1.2s ease-in-out infinite;
+}
+
+@keyframes heroRedline {
+  0%,
+  100% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 4px rgba(255, 87, 87, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 9px rgba(255, 87, 87, 0.9));
+  }
+}
+
+@keyframes heroSurge {
+  0%,
+  100% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 4px rgba(47, 219, 153, 0.45));
+  }
+  50% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 10px rgba(47, 219, 153, 0.75));
+  }
+}
+
+@keyframes heroFinished {
+  0%,
+  100% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(47, 219, 153, 0.7));
+  }
+  50% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 8px rgba(224, 176, 82, 0.7));
+  }
+}
+
 .live-dot {
   animation: livePulse 1.1s ease-in-out infinite;
 }
@@ -576,6 +682,9 @@ body {
   .car-sprite.is-redline .car-hull,
   .car-sprite.is-surge .car-hull,
   .car-sprite.is-finished .car-hull,
+  .car-sprite.has-3d.is-redline .car-hero,
+  .car-sprite.has-3d.is-surge .car-hero,
+  .car-sprite.has-3d.is-finished .car-hero,
   .live-dot,
   .watch-cta,
   .redline-vignette,

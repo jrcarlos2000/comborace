@@ -1,0 +1,81 @@
+/*
+ * ComboRace docs theme. Purple brand on a near-black race-track surface,
+ * matching the app palette in app/src/theme/colors.ts.
+ */
+
+:root {
+  /* Brand purple. brand-1 drives links and accents, brand-3 the solid buttons. */
+  --vp-c-brand-1: #9885ff;
+  --vp-c-brand-2: #7e5dfe;
+  --vp-c-brand-3: #6631f6;
+  --vp-c-brand-soft: rgba(126, 93, 254, 0.16);
+
+  /* Legacy aliases still referenced by some default-theme rules. */
+  --vp-c-brand: #7e5dfe;
+  --vp-c-brand-light: #9885ff;
+  --vp-c-brand-lighter: #a089ff;
+  --vp-c-brand-dark: #6631f6;
+  --vp-c-brand-darker: #4819be;
+}
+
+/* Dark race-track surfaces. */
+.dark {
+  --vp-c-bg: #0a0a12;
+  --vp-c-bg-alt: #12121f;
+  --vp-c-bg-elv: #12121f;
+  --vp-c-bg-soft: #0e0e1a;
+
+  --vp-c-divider: rgba(126, 93, 254, 0.12);
+  --vp-c-gutter: #06060c;
+
+  --vp-c-text-1: #f4f2ff;
+  --vp-c-text-2: rgba(235, 232, 255, 0.72);
+  --vp-c-text-3: rgba(235, 232, 255, 0.46);
+}
+
+/* Hero on the home page: brand gradient on the title, purple glow behind the image. */
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #a089ff 0%, #7e5dfe 50%, #6631f6 100%);
+
+  --vp-home-hero-image-background-image: linear-gradient(
+    120deg,
+    rgba(126, 93, 254, 0.5),
+    rgba(102, 49, 246, 0.3)
+  );
+  --vp-home-hero-image-filter: blur(56px);
+
+  /* Solid brand buttons. */
+  --vp-button-brand-bg: #7e5dfe;
+  --vp-button-brand-hover-bg: #6631f6;
+  --vp-button-brand-active-bg: #4819be;
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-hover-text: #ffffff;
+}
+
+/* Custom-block accents lean on the brand for tips. */
+.dark {
+  --vp-custom-block-tip-border: rgba(126, 93, 254, 0.3);
+  --vp-custom-block-tip-text: #dbd4ff;
+  --vp-custom-block-tip-bg: rgba(126, 93, 254, 0.08);
+  --vp-custom-block-tip-code-bg: rgba(126, 93, 254, 0.16);
+}
+
+/* Feature cards on the home page pick up a faint purple lift. */
+.dark .VPFeature {
+  background-color: #12121f;
+  border: 1px solid rgba(126, 93, 254, 0.1);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dark .VPFeature:hover {
+  border-color: rgba(126, 93, 254, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Inline code reads in the light purple, not the default green. */
+.dark :not(pre) > code {
+  color: #bab1ff;
+}
