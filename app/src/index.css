@@ -1,3 +1,6 @@
+@import './styles/fonts.css';
+@import './styles/components.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,8 +28,8 @@ body {
   overscroll-behavior: none;
 }
 
-/* One shared race arena. Left edge is 0% win chance (the red crash zone), the checkered
-   right edge is 100% (the finish every car races toward). A bright central median splits
+/* One shared race arena. Left edge is 0% win chance (the crash zone), the checkered
+   right edge is 100% (the finish every car races toward). A central median splits
    the grid into two cars above the line and two below it. */
 .race-arena {
   position: relative;
@@ -50,7 +53,7 @@ body {
   bottom: 0;
   width: 16px;
   z-index: 1;
-  background: linear-gradient(to right, rgba(255, 58, 62, 0.34), transparent);
+  background: linear-gradient(to right, rgba(255, 87, 87, 0.26), transparent);
 }
 
 .crash-band::before {
@@ -60,8 +63,8 @@ body {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: rgba(255, 58, 62, 0.7);
-  box-shadow: 0 0 12px rgba(255, 58, 62, 0.7);
+  background: rgba(255, 87, 87, 0.62);
+  box-shadow: 0 0 8px rgba(255, 87, 87, 0.35);
 }
 
 .crash-label {
@@ -75,7 +78,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(255, 58, 62, 0.8);
+  color: rgba(255, 87, 87, 0.72);
 }
 
 .finish-prize {
@@ -89,9 +92,9 @@ body {
   gap: 0;
   padding: 4px 8px;
   border-radius: 11px;
-  background: rgba(34, 245, 138, 0.12);
-  border: 1px solid rgba(34, 245, 138, 0.45);
-  box-shadow: 0 0 22px -8px rgba(34, 245, 138, 0.8);
+  background: rgba(47, 219, 153, 0.1);
+  border: 1px solid rgba(47, 219, 153, 0.38);
+  box-shadow: 0 10px 22px -14px rgba(47, 219, 153, 0.5);
 }
 
 .finish-flag {
@@ -99,7 +102,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(34, 245, 138, 0.95);
+  color: rgba(47, 219, 153, 0.92);
 }
 
 .finish-amount {
@@ -108,7 +111,7 @@ body {
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
   color: #fff;
-  text-shadow: 0 0 12px rgba(34, 245, 138, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .finish-sub {
@@ -132,7 +135,7 @@ body {
   border-radius: 5px;
   color: #fff;
   background: rgba(126, 93, 254, 0.95);
-  box-shadow: 0 0 10px rgba(126, 93, 254, 0.6);
+  box-shadow: 0 2px 6px -1px rgba(102, 49, 246, 0.5);
 }
 
 .car-sprite.is-you::before {
@@ -160,9 +163,9 @@ body {
 }
 
 .pos-badge.pos-lead {
-  color: #0b0b15;
-  background: linear-gradient(180deg, #ffe27a, #ffce3d);
-  box-shadow: 0 0 12px rgba(255, 206, 61, 0.6);
+  color: #241803;
+  background: linear-gradient(180deg, #ecc678, #e0b052);
+  box-shadow: 0 2px 8px -3px rgba(224, 176, 82, 0.55);
 }
 
 /* Faint asphalt lines that scroll left the whole time, so the track reads as moving even
@@ -199,10 +202,10 @@ body {
   opacity: 0.75;
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.65) 0 5px,
+    rgba(255, 255, 255, 0.6) 0 5px,
     rgba(0, 0, 0, 0.55) 5px 10px
   );
-  box-shadow: -8px 0 20px -10px rgba(34, 245, 138, 0.6);
+  box-shadow: -6px 0 16px -10px rgba(47, 219, 153, 0.45);
 }
 
 .grid-line {
@@ -272,8 +275,8 @@ body {
   top: 50%;
   height: 2px;
   transform: translateY(-50%);
-  background: linear-gradient(90deg, rgba(255, 58, 62, 0.55), rgba(255, 255, 255, 0.2) 45%, rgba(34, 245, 138, 0.7));
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.14);
+  background: linear-gradient(90deg, rgba(255, 87, 87, 0.5), rgba(255, 255, 255, 0.18) 45%, rgba(47, 219, 153, 0.6));
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
 }
 
 .median-axis {
@@ -300,31 +303,51 @@ body {
   z-index: 2;
 }
 
+/* A considered top-down racer: a body that tapers to a rounded nose on the right (the way it
+   races), a livery-tinted shell, a glass cockpit plate and two low wheels. Depth comes from a
+   thin color rim plus soft dark drops, never a saturated halo. */
 .car-hull {
   position: absolute;
   inset: 0;
-  border-radius: 15px;
+  border-radius: 8px 15px 15px 8px;
   will-change: transform;
-  background: linear-gradient(100deg, rgba(var(--crgb), 0.35), rgba(var(--crgb), 0.95));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(102deg, rgba(var(--crgb), 0.6), rgba(var(--crgb), 0.98) 80%);
   box-shadow:
-    0 0 0 1px rgba(var(--crgb), 0.6),
-    0 0 16px 2px rgba(var(--crgb), 0.5),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    0 0 0 1px rgba(var(--crgb), 0.55),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.5),
+    inset 0 -4px 7px -3px rgba(0, 0, 0, 0.5),
+    0 6px 14px -6px rgba(0, 0, 0, 0.6);
   animation: engine 1.7s ease-in-out infinite;
 }
 
-/* Speed streak trailing to the left, in the car's own neon. */
+/* Two low wheels tucked under the shell (one element, the second placed by box-shadow). */
+.car-hull::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  bottom: -1.5px;
+  width: 9px;
+  height: 4px;
+  border-radius: 2px;
+  background: #0a0a12;
+  box-shadow: 25px 0 0 0 #0a0a12;
+}
+
+/* Short motion trail off the tail in the car's own muted livery, a soft blur rather than a
+   fluorescent streak. */
 .car-hull::after {
   content: '';
   position: absolute;
   right: 100%;
   top: 50%;
-  height: 7px;
-  width: 34px;
-  margin-top: -3.5px;
+  height: 5px;
+  width: 22px;
+  margin-top: -2.5px;
   border-radius: 3px;
-  filter: blur(1px);
-  background: linear-gradient(to left, rgba(var(--crgb), 0.7), transparent);
+  filter: blur(1.5px);
+  background: linear-gradient(to left, rgba(var(--crgb), 0.3), transparent);
 }
 
 /* Skid streak flashed on the leading edge when a car loses ground, so a drop in win
@@ -339,19 +362,23 @@ body {
   border-radius: 3px;
   opacity: 0;
   filter: blur(0.6px);
-  background: repeating-linear-gradient(90deg, rgba(255, 58, 62, 0.85) 0 4px, transparent 4px 8px);
+  background: repeating-linear-gradient(90deg, rgba(255, 87, 87, 0.7) 0 4px, transparent 4px 8px);
   pointer-events: none;
 }
 
+/* Glass cockpit plate. Also gives the win-chance readout a darkened backing so it stays
+   legible on any livery. */
 .car-body {
   position: absolute;
-  left: 6px;
-  right: 6px;
-  top: 3px;
-  height: 6px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.35);
-  filter: blur(0.5px);
+  left: 5px;
+  right: 5px;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 6px 11px 11px 6px;
+  background: linear-gradient(110deg, rgba(6, 6, 14, 0.1), rgba(6, 6, 14, 0.42));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.26),
+    inset 0 -2px 4px -1px rgba(0, 0, 0, 0.35);
 }
 
 .car-pct {
@@ -397,15 +424,17 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 0 1px rgba(var(--crgb), 0.6),
-      0 0 14px 2px rgba(var(--crgb), 0.45),
-      inset 0 1px 2px rgba(255, 255, 255, 0.4);
+      0 0 0 1px rgba(var(--crgb), 0.5),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.5),
+      inset 0 -4px 7px -3px rgba(0, 0, 0, 0.5),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
   50% {
     box-shadow:
-      0 0 0 1px rgba(var(--crgb), 0.75),
-      0 0 22px 4px rgba(var(--crgb), 0.6),
-      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+      0 0 0 1px rgba(var(--crgb), 0.66),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.56),
+      inset 0 -4px 7px -3px rgba(0, 0, 0, 0.5),
+      0 7px 16px -6px rgba(0, 0, 0, 0.62);
   }
 }
 
@@ -413,13 +442,15 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 0 1px rgba(255, 58, 62, 0.85),
-      0 0 18px 3px rgba(255, 58, 62, 0.7);
+      0 0 0 1px rgba(255, 87, 87, 0.8),
+      0 0 10px -2px rgba(255, 87, 87, 0.5),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
   50% {
     box-shadow:
-      0 0 0 1px rgba(255, 58, 62, 1),
-      0 0 28px 7px rgba(255, 58, 62, 0.9);
+      0 0 0 1.5px rgba(255, 87, 87, 0.95),
+      0 0 16px 0 rgba(255, 87, 87, 0.6),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -427,13 +458,15 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 0 1px rgba(var(--crgb), 0.7),
-      0 0 20px 4px rgba(var(--crgb), 0.7);
+      0 0 0 1px rgba(47, 219, 153, 0.6),
+      0 0 10px -3px rgba(47, 219, 153, 0.4),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
   50% {
     box-shadow:
-      0 0 0 1px rgba(34, 245, 138, 0.85),
-      0 0 30px 8px rgba(34, 245, 138, 0.6);
+      0 0 0 1.5px rgba(47, 219, 153, 0.8),
+      0 0 16px -1px rgba(47, 219, 153, 0.5),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -441,25 +474,27 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 0 2px rgba(34, 245, 138, 0.9),
-      0 0 26px 6px rgba(34, 245, 138, 0.55);
+      0 0 0 1.5px rgba(47, 219, 153, 0.85),
+      0 0 16px -2px rgba(47, 219, 153, 0.45),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
   50% {
     box-shadow:
-      0 0 0 2px rgba(255, 212, 77, 0.9),
-      0 0 34px 10px rgba(255, 212, 77, 0.55);
+      0 0 0 1.5px rgba(224, 176, 82, 0.85),
+      0 0 18px -2px rgba(224, 176, 82, 0.45),
+      0 6px 14px -6px rgba(0, 0, 0, 0.6);
   }
 }
 
 @keyframes livePulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 58, 62, 0.6);
+    box-shadow: 0 0 0 0 rgba(255, 87, 87, 0.55);
   }
   70% {
-    box-shadow: 0 0 0 6px rgba(255, 58, 62, 0);
+    box-shadow: 0 0 0 6px rgba(255, 87, 87, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 58, 62, 0);
+    box-shadow: 0 0 0 0 rgba(255, 87, 87, 0);
   }
 }
 
@@ -516,23 +551,23 @@ body {
   }
 }
 
-/* Full-screen red breathing edge when your car teeters near 0% probability. */
+/* Full-screen breathing edge when your car teeters near 0% probability. */
 .redline-vignette {
   position: fixed;
   inset: 0;
   z-index: 15;
   pointer-events: none;
-  box-shadow: inset 0 0 90px 8px rgba(255, 58, 62, 0.42);
+  box-shadow: inset 0 0 90px 8px rgba(255, 87, 87, 0.34);
   animation: redlineEdge 0.7s ease-in-out infinite;
 }
 
 @keyframes redlineEdge {
   0%,
   100% {
-    box-shadow: inset 0 0 70px 4px rgba(255, 58, 62, 0.28);
+    box-shadow: inset 0 0 70px 4px rgba(255, 87, 87, 0.22);
   }
   50% {
-    box-shadow: inset 0 0 120px 14px rgba(255, 58, 62, 0.55);
+    box-shadow: inset 0 0 120px 14px rgba(255, 87, 87, 0.45);
   }
 }
 

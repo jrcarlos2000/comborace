@@ -1,0 +1,41 @@
+@layer components {
+  .row-center {
+    @apply flex items-center;
+  }
+
+  .neue-font {
+    @apply font-neue;
+  }
+
+  .primary-btn {
+    @apply rounded-xl border-2 border-brand-purple-light bg-gradient-primary text-white shadow-primary;
+  }
+  .primary-btn:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .cancel-btn {
+    @apply rounded-xl border-2 border-brand-red-light bg-gradient-cancel text-white shadow-cancel;
+  }
+
+  .default-btn {
+    @apply rounded-xl border border-white/10 bg-white/5 text-grey-50 shadow-card-dark;
+  }
+
+  .glass-btn {
+    @apply rounded-xl border border-white/10 text-grey-50 shadow-card-dark backdrop-blur-2xl;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-panel {
+    @apply rounded-2xl border border-white/10 bg-track-panel/70 shadow-card-dark backdrop-blur-xl;
+  }
+
+  .purple-text {
+    @apply bg-gradient-purple-text bg-clip-text text-transparent;
+  }
+
+  .car-chip {
+    @apply rounded-full shadow-chip;
+  }
+}

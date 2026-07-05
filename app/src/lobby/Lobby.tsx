@@ -224,7 +224,7 @@ function FriendRow({ racer, copied, onCopy }: { racer: Racer; copied: boolean; o
   const friendName = FRIEND_NAMES[c.id] ?? c.handle;
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-track-panel/70 px-3 py-2.5 ring-1 ring-white/5">
-      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: c.color, boxShadow: `0 0 10px ${c.color}` }} />
+      <span className="car-chip h-2.5 w-2.5 shrink-0" style={{ background: c.color }} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-bold" style={{ color: c.color }}>
@@ -257,12 +257,11 @@ function CandidateCard({ combo, selected, onSelect }: { combo: ComboDef; selecte
     <button
       onClick={onSelect}
       className={`rounded-2xl border p-3 text-left transition active:scale-[0.98] ${
-        selected ? 'border-brand bg-brand/10' : 'border-white/8 bg-track-panel/60'
+        selected ? 'border-brand bg-brand/10 shadow-car-select' : 'border-white/8 bg-track-panel/60'
       }`}
-      style={selected ? { boxShadow: `0 0 0 1px ${combo.color}, 0 0 18px -6px ${combo.color}` } : undefined}
     >
       <div className="flex items-center gap-2">
-        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: combo.color, boxShadow: `0 0 8px ${combo.color}` }} />
+        <span className="car-chip h-2 w-2 shrink-0" style={{ background: combo.color }} />
         <span className="truncate text-sm font-bold" style={{ color: combo.color }}>
           {combo.handle}
         </span>
@@ -290,7 +289,7 @@ function DifficultyPill({ multiplier }: { multiplier: number }) {
       : tone === 'even'
         ? 'bg-white/8 text-white/70 ring-white/15'
         : tone === 'risky'
-          ? 'bg-neon-orange/15 text-neon-orange ring-neon-orange/30'
+          ? 'bg-yellow-400/15 text-yellow-400 ring-yellow-400/30'
           : 'bg-crash/15 text-crash ring-crash/30';
   return (
     <span className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ring-1 ${cls}`}>

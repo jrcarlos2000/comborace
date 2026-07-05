@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import colors from '../theme/colors';
 
 export interface ParticlesHandle {
   explode: (x: number, y: number, rgb: string) => void;
@@ -23,16 +24,15 @@ interface Particle {
   ringMax: number;
 }
 
-const CONFETTI_PALETTE = ['#7E5DFE', '#22F58A', '#FFD44D', '#FFFFFF'];
-const EXPLOSION_PALETTE = ['#FF3A3E', '#FF8A1E', '#FFD44D', '#FFFFFF'];
+const CONFETTI_PALETTE = [colors.brand.DEFAULT, colors.cash, colors.gold, '#FFFFFF'];
+const EXPLOSION_PALETTE = [colors.crash, colors.gold, colors.grey[200], '#FFFFFF'];
 
 function rand(min: number, max: number): number {
   return min + Math.random() * (max - min);
 }
 
-// A dependency-free particle layer. One full-screen canvas, one animation loop shared by
-// every burst. Explosions are radial red-hot sparks plus a shock ring, cashes are a confetti
-// fountain tinted with the winning car's neon. Kept off the React render path for smoothness.
+// Dependency-free particle layer: one full-screen canvas and one shared loop, kept off the
+// React render path so bursts never cost the race a frame.
 export const Particles = forwardRef<ParticlesHandle>(function Particles(_props, ref) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
@@ -81,8 +81,7 @@ export const Particles = forwardRef<ParticlesHandle>(function Particles(_props, 
         });
       }
     },
-    // Expanding neon rings on a cash, phase-offset like the sting pulse-loader so the finish
-    // reads as a celebratory shockwave rather than a single flash.
+    // Phase-offset expanding rings so a cash lands as a shockwave, not a single flash.
     pulse(x, y, rgb) {
       for (let i = 0; i < 3; i++) {
         particles.current.push({

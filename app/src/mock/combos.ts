@@ -1,3 +1,4 @@
+import { carColors } from '../theme/colors';
 import {
   bttsYes,
   homeWin,
@@ -43,8 +44,8 @@ export const COMBOS: ComboDef[] = [
   {
     id: 'messi',
     handle: 'NitroNova',
-    color: '#22E1FF',
-    colorRgb: '34,225,255',
+    color: carColors[0].hex,
+    colorRgb: carColors[0].rgb,
     multiplier: 3.4,
     ante: 20,
     tagline: 'goals or bust',
@@ -56,8 +57,8 @@ export const COMBOS: ComboDef[] = [
   {
     id: 'rico',
     handle: 'RicoSuave',
-    color: '#FF8A1E',
-    colorRgb: '255,138,30',
+    color: carColors[1].hex,
+    colorRgb: carColors[1].rgb,
     multiplier: 2.1,
     ante: 20,
     tagline: 'a quiet game pays',
@@ -69,8 +70,8 @@ export const COMBOS: ComboDef[] = [
   {
     id: 'bro',
     handle: 'BetBroski',
-    color: '#FF3AF0',
-    colorRgb: '255,58,240',
+    color: carColors[2].hex,
+    colorRgb: carColors[2].rgb,
     multiplier: 2.8,
     ante: 20,
     tagline: 'both teams score',
@@ -82,8 +83,8 @@ export const COMBOS: ComboDef[] = [
   {
     id: 'oracle',
     handle: 'TheOracle',
-    color: '#B6FF3A',
-    colorRgb: '182,255,58',
+    color: carColors[3].hex,
+    colorRgb: carColors[3].rgb,
     multiplier: 2.4,
     ante: 20,
     tagline: 'the home team wins',

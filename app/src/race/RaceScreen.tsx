@@ -4,6 +4,7 @@ import { createMatchFeed, type FeedSource, type FeedStatus } from '../feed/match
 import { BUY_IN, computeStandings, fieldCombos, pickWinner, racerFor, type Racer } from '../game/session';
 import { useMoneyFlow, type Settlement } from '../game/useMoneyFlow';
 import { MomentSheet, type MomentData } from '../share/KillCard';
+import colors, { cashRgb, crashRgb } from '../theme/colors';
 import { Particles, type ParticlesHandle } from './Particles';
 import { RaceTrack } from './RaceTrack';
 import { Scoreboard } from './Scoreboard';
@@ -149,8 +150,8 @@ function crashMoment(ev: Extract<FeedEvent, { type: 'crash' }>, survivors: numbe
     id: `${ev.carId}-crash-${ev.minute}`,
     kind: 'crash',
     handle: combo?.handle ?? ev.carId,
-    color: combo?.color ?? '#FF3A3E',
-    colorRgb: combo?.colorRgb ?? '255,58,62',
+    color: combo?.color ?? colors.crash,
+    colorRgb: combo?.colorRgb ?? crashRgb,
     tagline: combo?.tagline ?? '',
     headline: 'WRECKED',
     detail: `"${ev.deadLegLabel}" pick died at ${stamp(ev.minute)}`,
@@ -168,8 +169,8 @@ function cashMoment(ev: Extract<FeedEvent, { type: 'cash' }>, field: Racer[]): M
     id: `${ev.carId}-cash-${ev.minute}`,
     kind: 'cash',
     handle: combo?.handle ?? ev.carId,
-    color: combo?.color ?? '#22F58A',
-    colorRgb: combo?.colorRgb ?? '34,245,138',
+    color: combo?.color ?? colors.cash,
+    colorRgb: combo?.colorRgb ?? cashRgb,
     tagline: combo?.tagline ?? '',
     headline: 'CASHED',
     detail: `all picks landed at ${stamp(ev.minute)}`,
@@ -194,7 +195,7 @@ function FeedBadge({ source, status }: { source: FeedSource; status: FeedStatus 
     <div className="pointer-events-none absolute left-3 top-3 z-30 flex items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-2 py-1 backdrop-blur-sm">
       <span
         className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-cash' : 'bg-white/40'}`}
-        style={live ? { boxShadow: '0 0 8px rgba(34,245,138,0.9)' } : undefined}
+        style={live ? { boxShadow: `0 0 6px rgba(${cashRgb}, 0.55)` } : undefined}
       />
       <span className="text-[9px] font-semibold uppercase tracking-widest text-white/50">{label}</span>
     </div>

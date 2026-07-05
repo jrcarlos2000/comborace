@@ -292,7 +292,7 @@ function CarLane({
         <span className={`pos-badge${place === 1 && status !== 'crashed' ? ' pos-lead' : ''}`}>
           {status === 'crashed' ? 'X' : place ? `P${place}` : 'P-'}
         </span>
-        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: combo.color, boxShadow: `0 0 8px ${combo.color}` }} />
+        <span className="car-chip h-2 w-2 shrink-0" style={{ background: combo.color }} />
         <span className="truncate text-[12px] font-bold" style={{ color: combo.color }}>
           {combo.handle}
         </span>

@@ -79,7 +79,7 @@ export function ResultOverlay({
                   }`}
                 >
                   <span className="w-4 text-center font-mono text-xs text-white/40">{i + 1}</span>
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }} />
+                  <span className="car-chip h-2.5 w-2.5" style={{ background: c.color }} />
                   <span className="flex-1 truncate text-sm font-bold" style={{ color: c.color }}>
                     {c.handle}
                   </span>

@@ -1,6 +1,7 @@
 import { forwardRef, useRef, useState } from 'react';
 import { toBlob } from 'html-to-image';
 import { difficultyLabel } from '../mock/combos';
+import colors, { cashRgb, crashRgb } from '../theme/colors';
 
 export interface MomentData {
   id: string;
@@ -50,8 +51,8 @@ async function shareNode(node: HTMLElement, moment: MomentData): Promise<'shared
 
 export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(function ShareCard({ moment }, ref) {
   const crash = moment.kind === 'crash';
-  const accent = crash ? '#FF3A3E' : '#22F58A';
-  const accentRgb = crash ? '255,58,62' : '34,245,138';
+  const accent = crash ? colors.crash : colors.cash;
+  const accentRgb = crash ? crashRgb : cashRgb;
 
   return (
     <div
@@ -99,7 +100,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
             height: 10,
             borderRadius: 999,
             background: moment.color,
-            boxShadow: `0 0 12px ${moment.color}`,
+            boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.4)',
           }}
         />
         <span style={{ fontSize: 19, fontWeight: 800, color: moment.color }}>{moment.handle}</span>

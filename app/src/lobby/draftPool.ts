@@ -1,4 +1,5 @@
 import { type ComboDef } from '../mock/combos';
+import { carColors } from '../theme/colors';
 import {
   awayWin,
   bttsYes,
@@ -19,8 +20,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'messi',
     handle: 'NitroNova',
-    color: '#22E1FF',
-    colorRgb: '34,225,255',
+    color: carColors[0].hex,
+    colorRgb: carColors[0].rgb,
     multiplier: 3.4,
     ante: BUY_IN,
     tagline: 'goals or bust',
@@ -32,8 +33,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'rico',
     handle: 'RicoSuave',
-    color: '#FF8A1E',
-    colorRgb: '255,138,30',
+    color: carColors[1].hex,
+    colorRgb: carColors[1].rgb,
     multiplier: 2.1,
     ante: BUY_IN,
     tagline: 'a quiet game pays',
@@ -45,8 +46,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'bro',
     handle: 'BetBroski',
-    color: '#FF3AF0',
-    colorRgb: '255,58,240',
+    color: carColors[2].hex,
+    colorRgb: carColors[2].rgb,
     multiplier: 2.8,
     ante: BUY_IN,
     tagline: 'both teams score',
@@ -58,8 +59,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'oracle',
     handle: 'TheOracle',
-    color: '#B6FF3A',
-    colorRgb: '182,255,58',
+    color: carColors[3].hex,
+    colorRgb: carColors[3].rgb,
     multiplier: 2.4,
     ante: BUY_IN,
     tagline: 'the home team wins',
@@ -71,8 +72,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'nyx',
     handle: 'NyxUnderdog',
-    color: '#3AA0FF',
-    colorRgb: '58,160,255',
+    color: carColors[4].hex,
+    colorRgb: carColors[4].rgb,
     multiplier: 3.6,
     ante: BUY_IN,
     tagline: 'away steals it',
@@ -84,8 +85,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'blitz',
     handle: 'BlitzMode',
-    color: '#FF4D8D',
-    colorRgb: '255,77,141',
+    color: carColors[5].hex,
+    colorRgb: carColors[5].rgb,
     multiplier: 4.3,
     ante: BUY_IN,
     tagline: 'goal fest or bust',
@@ -97,8 +98,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'wall',
     handle: 'TheWall',
-    color: '#22F5C8',
-    colorRgb: '34,245,200',
+    color: carColors[6].hex,
+    colorRgb: carColors[6].rgb,
     multiplier: 1.8,
     ante: BUY_IN,
     tagline: 'grind it to zero',
@@ -110,8 +111,8 @@ export const DRAFT_POOL: ComboDef[] = [
   {
     id: 'havoc',
     handle: 'HavocCrew',
-    color: '#FFD44D',
-    colorRgb: '255,212,77',
+    color: carColors[7].hex,
+    colorRgb: carColors[7].rgb,
     multiplier: 2.6,
     ante: BUY_IN,
     tagline: 'cards and corners',
