@@ -1,12 +1,12 @@
 import { defineConfig } from 'vitepress'
 
 const favicon =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306060c'/%3E%3Crect x='7' y='13' width='18' height='7' rx='3.5' fill='%237E5DFE'/%3E%3Crect x='2' y='15' width='5' height='3' rx='1.5' fill='%237E5DFE' opacity='0.5'/%3E%3C/svg%3E"
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1b19'/%3E%3Crect x='7' y='13' width='18' height='7' rx='3.5' fill='%234a6076'/%3E%3Crect x='2' y='15' width='5' height='3' rx='1.5' fill='%234a6076' opacity='0.5'/%3E%3C/svg%3E"
 
 export default defineConfig({
   title: 'ComboRace',
   description:
-    'Your group-chat parlay, turned into a live car race where the cars ARE the odds. Betting you can watch, powered by demargined TxLINE win-probability.',
+    'Documentation for ComboRace, a live parlay game on TxLINE where each car is a soccer parlay and its position on the track is the live probability the parlay still cashes.',
   lang: 'en-US',
 
   // Served under comborace.jrcarlos2000.dev/docs so every asset resolves beneath /docs.
@@ -18,13 +18,14 @@ export default defineConfig({
 
   head: [
     ['link', { rel: 'icon', href: favicon }],
-    ['meta', { name: 'theme-color', content: '#EDEEF2' }],
-    ['meta', { property: 'og:title', content: 'ComboRace Docs' }],
+    ['meta', { name: 'theme-color', content: '#faf9f6' }],
+    ['meta', { property: 'og:title', content: 'ComboRace documentation' }],
     [
       'meta',
       {
         property: 'og:description',
-        content: 'Betting you can watch. The parlay-as-a-race game built on TxLINE.'
+        content:
+          'How ComboRace works: the parlay-as-a-race mechanic, the TxLINE odds feed, and on-chain settlement.'
       }
     ]
   ],
@@ -71,7 +72,7 @@ export default defineConfig({
     search: { provider: 'local' },
 
     footer: {
-      message: 'Betting you can watch. Built on TxLINE.',
+      message: 'Built on TxLINE for the TxODDS World Cup hackathon.',
       copyright: 'ComboRace'
     }
   }

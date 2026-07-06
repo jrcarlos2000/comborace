@@ -1,253 +1,399 @@
 /*
- * ComboRace docs theme, light Danny surface. Purple accent used for interactive
- * elements only (links, active nav, buttons); a grey ramp carries text and
- * surfaces; raised white cards on a soft cool off-white page, engineered soft
- * shadows, radii on the 12 / 16 / 24 scale. Tokens mirror the app:
- * app/src/theme/colors.ts, app/src/index.css and app/src/styles/components.css.
+ * ComboRace docs. Editorial documentation surface, deliberately distinct from the
+ * app landing: warm ivory paper, near-black ink, a single restrained slate blue-grey
+ * accent for links, active nav and focus rings. No purple anywhere. Craft comes from
+ * a serif display masthead over a clean sans body, hairline rules, generous rhythm,
+ * engineered directional shadows, and radii on the 12 / 16 / 24 scale.
  */
 
 :root {
   color-scheme: light;
 
-  /* ComboRace purple. brand-1 is the readable link / active tone (purple-600),
-     brand-2 the default brand (the #7E5DFE accent), brand-3 the solid fill. */
-  --vp-c-brand-1: #6631f6;
-  --vp-c-brand-2: #7e5dfe;
-  --vp-c-brand-3: #7e5dfe;
-  --vp-c-brand-soft: rgba(126, 93, 254, 0.14);
+  /* Accent: one restrained slate blue-grey, interactive elements only. */
+  --cr-accent: #3f5468;
+  --cr-accent-strong: #2c3d4c;
+  --cr-accent-tint: #55697e;
+  --cr-accent-soft: rgba(63, 84, 104, 0.1);
+  --cr-accent-ring: rgba(63, 84, 104, 0.55);
 
-  /* Deprecated aliases still referenced by a few default-theme rules. */
-  --vp-c-brand: #7e5dfe;
-  --vp-c-brand-light: #7e5dfe;
-  --vp-c-brand-lighter: #9885ff;
-  --vp-c-brand-dark: #6631f6;
-  --vp-c-brand-darker: #4819be;
+  /* Ink ramp for text. */
+  --cr-ink: #1c1b19;
+  --cr-ink-2: #57564f;
+  --cr-ink-3: #817f75;
 
-  /* Light race-track surfaces. Page is the frosted near-white; the nav, sidebar
-     and footer sit on the softer base; raised surfaces and cards are pure white. */
-  --vp-c-bg: #f6f6f9;
-  --vp-c-bg-alt: #edeef2;
-  --vp-c-bg-elv: #ffffff;
-  --vp-c-bg-soft: #ffffff;
+  /* Paper surfaces. Page is a warm ivory, chrome sits on a softer tint, raised
+     containers are white. Deliberately warm so the docs never read as the cool
+     app surface. */
+  --cr-paper: #faf9f6;
+  --cr-paper-alt: #f2f1ec;
+  --cr-paper-soft: #f6f5f1;
+  --cr-surface: #ffffff;
 
-  /* Grey ramp for text (grey-950 / grey-700 / grey-500). */
-  --vp-c-text-1: #191919;
-  --vp-c-text-2: #525252;
-  --vp-c-text-3: #787878;
+  /* Warm hairlines. */
+  --cr-line: #e6e2d9;
+  --cr-line-soft: #eeebe3;
 
-  /* Faint grid rules off the track line + grey ramp. */
-  --vp-c-border: #dcdcdc;
-  --vp-c-divider: #e1e1e8;
-  --vp-c-gutter: #edeef2;
+  /* Engineered directional soft shadows. */
+  --cr-shadow-soft: 0 1px 2px rgba(28, 27, 25, 0.05), 0 14px 34px -22px rgba(28, 27, 25, 0.2);
+  --cr-shadow-code: 0 1px 2px rgba(28, 27, 25, 0.05), 0 20px 44px -30px rgba(28, 27, 25, 0.26);
 
-  /* Neutral (non-accent) surfaces: alt buttons, inline code, info blocks. */
-  --vp-c-default-1: #dcdcdc;
-  --vp-c-default-2: #e1e1e8;
-  --vp-c-default-3: #ecedf1;
-  --vp-c-default-soft: #edeef2;
+  /* Serif display stack for the masthead and headings. Falls back to the system
+     serif on Linux, resolves to Iowan / Palatino / Georgia on Apple and Windows. */
+  --cr-font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua',
+    Georgia, Cambria, 'Times New Roman', serif;
 
-  /* Semantic race states from the app palette. */
-  --vp-c-tip-1: #6631f6;
-  --vp-c-tip-2: #7e5dfe;
-  --vp-c-tip-3: #7e5dfe;
-  --vp-c-tip-soft: rgba(126, 93, 254, 0.1);
+  /* Map VitePress brand vars to the slate accent (away from the app purple). */
+  --vp-c-brand-1: var(--cr-accent);
+  --vp-c-brand-2: var(--cr-accent-tint);
+  --vp-c-brand-3: var(--cr-accent);
+  --vp-c-brand-soft: var(--cr-accent-soft);
+  --vp-c-brand: var(--cr-accent);
+  --vp-c-brand-light: var(--cr-accent-tint);
+  --vp-c-brand-lighter: var(--cr-accent-tint);
+  --vp-c-brand-dark: var(--cr-accent-strong);
+  --vp-c-brand-darker: var(--cr-accent-strong);
 
-  --vp-c-note-1: #6631f6;
-  --vp-c-note-2: #7e5dfe;
-  --vp-c-note-3: #7e5dfe;
-  --vp-c-note-soft: rgba(126, 93, 254, 0.1);
+  /* Surfaces. */
+  --vp-c-bg: var(--cr-paper);
+  --vp-c-bg-alt: var(--cr-paper-alt);
+  --vp-c-bg-elv: var(--cr-surface);
+  --vp-c-bg-soft: var(--cr-paper-soft);
 
-  --vp-c-warning-1: #b7791f;
-  --vp-c-warning-2: #b7791f;
-  --vp-c-warning-3: #b7791f;
-  --vp-c-warning-soft: rgba(183, 121, 31, 0.1);
+  /* Text ramp. */
+  --vp-c-text-1: var(--cr-ink);
+  --vp-c-text-2: var(--cr-ink-2);
+  --vp-c-text-3: var(--cr-ink-3);
 
-  --vp-c-danger-1: #e5342e;
-  --vp-c-danger-2: #e5342e;
-  --vp-c-danger-3: #e5342e;
-  --vp-c-danger-soft: rgba(229, 52, 46, 0.1);
+  /* Rules and gutters. */
+  --vp-c-border: var(--cr-line);
+  --vp-c-divider: var(--cr-line-soft);
+  --vp-c-gutter: var(--cr-paper-alt);
 
-  --vp-c-important-1: #6631f6;
-  --vp-c-important-2: #7e5dfe;
-  --vp-c-important-3: #7e5dfe;
-  --vp-c-important-soft: rgba(126, 93, 254, 0.1);
+  /* Neutral (non-accent) surfaces: alt buttons, inline blocks. */
+  --vp-c-default-1: #d9d5cb;
+  --vp-c-default-2: #e6e2d9;
+  --vp-c-default-3: #efece5;
+  --vp-c-default-soft: var(--cr-paper-alt);
 
-  /* System font stack matching the app (San Francisco on Apple, system elsewhere). */
-  --vp-font-family-base: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --vp-font-family-mono: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, 'Liberation Mono', monospace;
+  /* Custom containers in muted, monochrome-leaning semantic tones. tip carries the
+     slate accent; note is a plain warm grey; warning and danger are muted. */
+  --vp-c-tip-1: var(--cr-accent);
+  --vp-c-tip-2: var(--cr-accent-tint);
+  --vp-c-tip-3: var(--cr-accent);
+  --vp-c-tip-soft: var(--cr-accent-soft);
 
-  /* Inline code reads as a soft grey chip with the deep-purple accent glyphs. */
-  --vp-code-color: #6631f6;
-  --vp-code-bg: rgba(126, 93, 254, 0.08);
-  --vp-code-block-bg: #f8f8f8;
+  --vp-c-note-1: #57564f;
+  --vp-c-note-2: #6e6c63;
+  --vp-c-note-3: #57564f;
+  --vp-c-note-soft: rgba(87, 86, 79, 0.1);
 
-  /* Solid brand buttons on the ComboRace purple. */
+  --vp-c-warning-1: #8a6a1f;
+  --vp-c-warning-2: #8a6a1f;
+  --vp-c-warning-3: #8a6a1f;
+  --vp-c-warning-soft: rgba(138, 106, 31, 0.1);
+
+  --vp-c-danger-1: #9e3b34;
+  --vp-c-danger-2: #9e3b34;
+  --vp-c-danger-3: #9e3b34;
+  --vp-c-danger-soft: rgba(158, 59, 52, 0.1);
+
+  --vp-c-important-1: var(--cr-accent);
+  --vp-c-important-2: var(--cr-accent-tint);
+  --vp-c-important-3: var(--cr-accent);
+  --vp-c-important-soft: var(--cr-accent-soft);
+
+  /* Clean sans body (Inter ships with VitePress), serif reserved for display. */
+  --vp-font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  --vp-font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', 'DejaVu Sans Mono', monospace;
+
+  /* Inline code reads as a neutral warm chip with ink glyphs, not an accent. */
+  --vp-code-color: #3d3c37;
+  --vp-code-bg: rgba(28, 27, 25, 0.055);
+  --vp-code-block-bg: #f5f4ef;
+
+  /* Solid buttons on the slate accent (rarely used now the hero is gone). */
   --vp-button-brand-border: transparent;
   --vp-button-brand-text: #ffffff;
-  --vp-button-brand-bg: #7e5dfe;
+  --vp-button-brand-bg: var(--cr-accent);
   --vp-button-brand-hover-border: transparent;
   --vp-button-brand-hover-text: #ffffff;
-  --vp-button-brand-hover-bg: #6631f6;
+  --vp-button-brand-hover-bg: var(--cr-accent-strong);
   --vp-button-brand-active-border: transparent;
   --vp-button-brand-active-text: #ffffff;
-  --vp-button-brand-active-bg: #4819be;
-
-  /* Hero on the home page: brand gradient on the name, soft purple glow blob. */
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #7e5dfe 0%, #6631f6 100%);
-  --vp-home-hero-image-background-image: linear-gradient(
-    120deg,
-    rgba(126, 93, 254, 0.45),
-    rgba(102, 49, 246, 0.25)
-  );
-  --vp-home-hero-image-filter: blur(64px);
+  --vp-button-brand-active-bg: var(--cr-accent-strong);
 }
 
-/* The whole home surface carries the app's radial brand wash over the base, so the
-   landing reads as the same product as the app. */
-.VPHome {
-  background:
-    radial-gradient(130% 65% at 50% -12%, rgba(126, 93, 254, 0.1), transparent 60%),
-    radial-gradient(100% 60% at 50% 115%, rgba(102, 49, 246, 0.05), transparent 60%),
-    var(--vp-c-bg);
+/* Nav title as a small serif masthead. */
+.VPNavBarTitle .title {
+  font-family: var(--cr-font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-/* Hero name gradient clip (some browsers need the -webkit pair explicit). */
-.VPHero .name .clip {
-  background: var(--vp-home-hero-name-background);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Doc typography: serif display headings over the sans body, warm hairline above
+   each section for an editorial, printed rhythm. */
+.vp-doc h1 {
+  font-family: var(--cr-font-serif);
+  font-weight: 600;
+  font-size: 2.6rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
 }
 
-/* The brand mark is a small 32-unit svg; size it up so it reads as a crafted badge. */
-.VPHero .image-src {
-  width: 168px;
-  height: 168px;
-  max-width: 168px;
-  max-height: 168px;
-  border-radius: 24px;
-  box-shadow: 0px 0px 56.6px 0px rgba(0, 0, 0, 0.09);
+.vp-doc h2 {
+  font-family: var(--cr-font-serif);
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  margin-top: 3rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--vp-c-divider);
 }
 
-/* Hero lead CTA: the app's accent button with the inset top-edge highlight
-   signature plus a soft purple lift (the shadow-cta treatment). */
-.VPHero .actions .VPButton.brand {
-  border: 1px solid rgba(152, 133, 239, 0.6);
+.vp-doc h3 {
+  font-weight: 650;
+  font-size: 1.2rem;
+  letter-spacing: -0.006em;
+  margin-top: 2rem;
+}
+
+.vp-doc p,
+.vp-doc li {
+  line-height: 1.78;
+}
+
+.vp-doc a {
+  font-weight: 500;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--cr-accent) 40%, transparent);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+
+.vp-doc a:hover {
+  text-decoration-color: var(--cr-accent);
+}
+
+/* Blockquotes as a quiet editorial aside with a slate rule. */
+.vp-doc blockquote {
+  border-left: 2px solid var(--cr-accent);
+  color: var(--cr-ink-2);
+}
+
+/* ----- Home: content-first documentation index (no hero, no card grid) ----- */
+
+.cr-home {
+  padding-top: 0.5rem;
+}
+
+.cr-overline {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cr-ink-3);
+  margin: 0 0 0.9rem;
+}
+
+.cr-home h1.cr-title {
+  font-family: var(--cr-font-serif);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--cr-ink);
+  margin: 0;
+}
+
+.cr-lead {
+  max-width: 42rem;
+  margin: 1.4rem 0 0;
+  font-size: 1.16rem;
+  line-height: 1.7;
+  color: var(--cr-ink-2);
+}
+
+.cr-lead code {
+  background: var(--vp-code-bg);
+  color: var(--vp-code-color);
+  border-radius: 6px;
+  padding: 0.12em 0.4em;
+  font-size: 0.86em;
+}
+
+.cr-subhead {
+  max-width: 42rem;
+  margin: 0.85rem 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--cr-ink-3);
+}
+
+.cr-section-label {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cr-ink-3);
+  margin: 3rem 0 0;
+}
+
+.cr-index {
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--cr-line);
+}
+
+a.cr-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  align-items: baseline;
+  gap: 0 1.25rem;
+  padding: 1.15rem 0.75rem 1.15rem 0.25rem;
+  border-bottom: 1px solid var(--cr-line-soft);
   border-radius: 12px;
-  box-shadow:
-    0px 0px 2.5px 0px rgba(0, 0, 0, 0.34),
-    0px -5px 4px 0px #8e75ef inset,
-    0px 16px 34px -12px rgba(126, 93, 254, 0.45);
-  transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.075s ease;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.18s ease, padding 0.18s ease;
 }
 
-.VPHero .actions .VPButton.brand:hover {
-  filter: brightness(1.05);
+a.cr-row:hover {
+  background: var(--cr-paper-soft);
+  padding-left: 0.75rem;
 }
 
-.VPHero .actions .VPButton.brand:active {
-  box-shadow: 0px 0px 2.5px 0px rgba(0, 0, 0, 0.34);
-  transform: scale(0.98);
+.cr-num {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--cr-ink-3);
+  transition: color 0.18s ease;
 }
 
-/* Hero secondary CTAs: the app's white raised button with the engineered edge. */
-.VPHero .actions .VPButton.alt {
-  border: 1px solid var(--vp-c-border);
-  border-radius: 12px;
-  background: #ffffff;
-  color: #464646;
-  box-shadow:
-    0px 0px 2.5px 0px rgba(0, 0, 0, 0.34),
-    0px -5px 4px 0px rgba(240, 240, 240, 0.8) inset;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.075s ease;
+a.cr-row:hover .cr-num {
+  color: var(--cr-accent);
 }
 
-.VPHero .actions .VPButton.alt:hover {
-  border-color: #bdbdbd;
-  background: #f8f8f8;
+.cr-title-row {
+  display: block;
+  font-family: var(--cr-font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--cr-ink);
+  transition: color 0.18s ease;
 }
 
-.VPHero .actions .VPButton.alt:active {
-  transform: scale(0.98);
+a.cr-row:hover .cr-title-row {
+  color: var(--cr-accent-strong);
 }
 
-/* Feature cards become the app's surface-card: raised white on the 16px radius
-   with the soft ambient card drop and a hover lift. */
-.VPFeature {
-  background: #ffffff;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 16px;
-  box-shadow: 0px 0px 56.6px 0px rgba(0, 0, 0, 0.09);
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+.cr-desc {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--cr-ink-2);
 }
 
-.VPFeature:hover {
-  transform: translateY(-3px);
-  border-color: #bdbdbd;
-  box-shadow:
-    0px 1px 4px 0px rgba(0, 0, 0, 0.06),
-    0px 16px 40px -18px rgba(126, 93, 254, 0.28);
+.cr-home-foot {
+  margin-top: 2.75rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--cr-line-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--cr-ink-3);
 }
 
-.VPFeature .icon {
-  border-radius: 12px;
+.cr-home-foot a {
+  color: var(--cr-accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cr-accent) 40%, transparent);
+  text-underline-offset: 2px;
 }
 
-/* Fenced code blocks, when present, read as crafted light cards. */
+.cr-home-foot a:hover {
+  text-decoration-color: var(--cr-accent);
+}
+
+/* ----- Chrome: nav, sidebar ----- */
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-weight: 650;
+  color: var(--cr-ink);
+}
+
+/* ----- Code blocks: readable warm light card on the 16px radius ----- */
+
 .vp-doc div[class*='language-'] {
   border-radius: 16px;
-  border: 1px solid var(--vp-c-divider);
-  box-shadow: 0px 0px 56.6px 0px rgba(0, 0, 0, 0.09);
+  border: 1px solid var(--cr-line);
+  box-shadow: var(--cr-shadow-code);
 }
 
-/* Custom containers (tip / warning / danger) on the 16px radius with a soft drop. */
+.vp-doc :not(pre) > code {
+  background: var(--vp-code-bg);
+  color: var(--vp-code-color);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+  font-size: 0.85em;
+}
+
+/* ----- Custom containers on the 16px radius with a soft drop ----- */
+
 .vp-doc .custom-block {
   border-radius: 16px;
-  border: 1px solid var(--vp-c-divider);
-  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--cr-line);
+  box-shadow: var(--cr-shadow-soft);
 }
 
-/* Prose tables read in the light grey ramp with a soft header. */
+.vp-doc .custom-block.tip {
+  border-color: color-mix(in srgb, var(--cr-accent) 30%, var(--cr-line));
+}
+
+/* ----- Tables read in the warm grey ramp ----- */
+
 .vp-doc th {
-  background: #f1f1f1;
-  color: var(--vp-c-text-1);
+  background: var(--cr-paper-alt);
+  color: var(--cr-ink);
+  font-weight: 650;
 }
 
 .vp-doc tr {
   background: transparent;
-  border-top: 1px solid var(--vp-c-divider);
+  border-top: 1px solid var(--cr-line-soft);
 }
 
 .vp-doc tr:nth-child(2n) {
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(28, 27, 25, 0.02);
 }
 
-/* Local search box: raised white surface on the panel radius. */
+/* ----- Local search: raised white panel on the 16px radius ----- */
+
 .VPLocalSearchBox .shell {
   border-radius: 16px;
-  box-shadow: 0px 0px 56.6px 0px rgba(0, 0, 0, 0.09);
+  box-shadow: var(--cr-shadow-code);
 }
 
-/* Nav radii on the input step, so the search toggle and menu chips read crafted. */
 .VPNavBarSearchButton .DocSearch-Button,
 .VPNavBar .VPNavBarSearch .DocSearch-Button {
   border-radius: 12px;
 }
 
-/* Purple focus ring on every interactive element, offset against the light page,
-   mirroring the app's .focus-ring. */
+/* ----- Focus-visible ring in the slate accent on every interactive element ----- */
+
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible,
 input:focus-visible,
 .VPButton:focus-visible,
-.VPFeature:focus-visible,
 .VPLink:focus-visible,
+a.cr-row:focus-visible,
 .vp-doc a:focus-visible {
-  outline: 2px solid rgba(126, 93, 254, 0.9);
+  outline: 2px solid var(--cr-accent-ring);
   outline-offset: 2px;
   border-radius: 8px;
 }
