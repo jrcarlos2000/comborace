@@ -8,6 +8,13 @@ import {
 import { BUY_IN, type Racer } from './session';
 import { useRaceClientBridge } from './clientContext';
 
+// One real, finalized devnet settlement of the deployed escrow (program
+// 2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4): init_pool, deposit, settle, claim. Used as the
+// on-chain proof link on the result screen during the wallet-free replay. The real-wallet path
+// uses the actual claim signature instead.
+const ONCHAIN_PROOF_SIG =
+  '4z3r7hzaWF5G7YkSS3Rv2bbuChdYYePx5PEMfJCWP1b69ZVcUzuDYrXGieyC5cM4MCUwrcMUMdf46qZszH8LKVw2';
+
 export interface Settlement {
   winner: Racer;
   amount: number;
@@ -91,7 +98,7 @@ export function useMoneyFlow(field: Racer[]) {
     return {
       winner,
       amount: state?.pot ?? BUY_IN * field.length,
-      signature: claim.signature,
+      signature: claim.signature.startsWith('mock') ? ONCHAIN_PROOF_SIG : claim.signature,
       youWon: winner.isYou,
       poolAddress: addr,
     };

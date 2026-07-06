@@ -1,5 +1,5 @@
 // Placeholder program id. Replace after `anchor keys sync` (see ../program/README.md).
-export const PROGRAM_ID = 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS';
+export const PROGRAM_ID = '2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4';
 
 // Circle USDC on Solana mainnet-beta.
 export const MAINNET_USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
