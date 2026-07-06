@@ -9,7 +9,7 @@ export default defineConfig({
     'Documentation for ComboRace, a live parlay game on TxLINE where each car is a soccer parlay and its position on the track is the live probability the parlay still cashes.',
   lang: 'en-US',
 
-  // Served under comborace.jrcarlos2000.dev/docs so every asset resolves beneath /docs.
+  // Served under comborace.vercel.app/docs so every asset resolves beneath /docs.
   base: '/docs/',
 
   // The app is a light, crafted Danny surface, so the docs force light too.
@@ -18,7 +18,7 @@ export default defineConfig({
 
   head: [
     ['link', { rel: 'icon', href: favicon }],
-    ['meta', { name: 'theme-color', content: '#faf9f6' }],
+    ['meta', { name: 'theme-color', content: '#ffffff' }],
     ['meta', { property: 'og:title', content: 'ComboRace documentation' }],
     [
       'meta',
@@ -40,7 +40,7 @@ export default defineConfig({
       { text: 'TxLINE', link: '/guide/txline-integration' },
       { text: 'Architecture', link: '/guide/architecture' },
       { text: 'Roadmap', link: '/guide/roadmap' },
-      { text: 'Play', link: 'https://comborace.jrcarlos2000.dev' }
+      { text: 'Play', link: 'https://comborace.vercel.app' }
     ],
 
     sidebar: {
@@ -72,7 +72,7 @@ export default defineConfig({
     search: { provider: 'local' },
 
     footer: {
-      message: 'Built on TxLINE for the TxODDS World Cup hackathon.',
+      message: 'Built on TxLINE.',
       copyright: 'ComboRace'
     }
   }

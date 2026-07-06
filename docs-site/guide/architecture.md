@@ -27,7 +27,7 @@ Crucially it ships two implementations behind one interface: the real on-chain c
 
 ## One process, replay-first
 
-The public MVP runs in replay mode on a recorded match, because the tournament is over during judging and a live game is not guaranteed to be on. The server reads a recorded JSONL file and streams `MatchTick` frames over a WebSocket to the frontend, looping so a visitor always lands mid-race.
+The public MVP runs in replay mode on a recorded match, because a live game is not guaranteed to be in progress when someone opens the app. The server reads a recorded JSONL file and streams `MatchTick` frames over a WebSocket to the frontend, looping so a visitor always lands mid-race.
 
 The same server can point at the live TxLINE feed instead of a recording, with no change to the mapping logic, because a recorded snapshot and a live snapshot have the same shape. Recording a match for replay and then wiring the same shape to a live source is a natural fit.
 

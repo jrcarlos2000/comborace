@@ -10,7 +10,7 @@ The public front door is wallet-free and always mid-race.
 2. **Read the track.** Each car is named and carries a live win percentage. Position down the track is that percentage. A car near the finish is close to cashing, a car near the start is close to crashing.
 3. **Watch it resolve.** Cars breathe with the match every second. A corner nudges one forward. A goal yanks the relevant cars to their new probability and detonates the ones whose leg just died, with a full-screen kill cam and a shareable Kill Card. Survivors keep racing toward the line.
 
-This is the mode that runs on the public link. It exists so a mainstream fan, or a judge, can understand the whole idea in one glance without touching crypto.
+This is the mode that runs on the public link. It exists so a first-time visitor can understand the whole idea in one glance without touching crypto.
 
 ## Join a private lobby
 

@@ -4,7 +4,7 @@ ComboRace today is the wallet-free replay experience plus a real Anchor escrow a
 
 ## Real-time in-play betting
 
-The public MVP runs on the free 60-second World Cup feed, smoothed hard on the client so it still feels live. The next step is true real-time, which is the paid TxLINE tier with sub-second updates.
+The public MVP runs on the free 60-second feed, smoothed hard on the client so it still feels live. The next step is true real-time, which is the paid TxLINE tier with sub-second updates.
 
 On a real-time feed the cars move on every odds tick instead of every batch, so the interpolation becomes a finishing touch rather than the thing holding the illusion together. That unlocks genuine in-play betting: joining a pool after kickoff, live copy-a-car, and reacting to the match as it unfolds instead of locking a grid at the whistle.
 
@@ -19,7 +19,7 @@ Beyond that, settlement can move from an off-chain winner computation to an in-p
 The longer game is that ComboRace is a demand engine for TxODDS's own product, not a competitor to it. Every unit of growth pulls through a paid TxLINE subscription.
 
 - **A thin, on-chain track fee.** ComboRace can take roughly 2 percent, disclosed and accruing to a protocol account, far below a book's compounded combo vig. This is possible because `Pct` is already de-margined, so a four-leg combo costs about 2 percent here versus the much higher compounded vig at a sportsbook. That price gap is the switching argument.
-- **A consumer Pit Pass.** The free tier runs on the 60-second World Cup feed. Premium play, meaning bigger pools, private leagues, and replays, needs the real-time feed that only exists on paid mainnet TxLINE, so a paying fan literally funds a feed pull.
+- **A consumer Pit Pass.** The free tier runs on the 60-second feed. Premium play, meaning bigger pools, private leagues, and replays, needs the real-time feed that only exists on paid mainnet TxLINE, so a paying fan directly funds a feed pull.
 - **A white-label widget for books.** A sportsbook that white-labels the ComboRace watch-along widget must subscribe to a real-time TxLINE feed to power it, which turns ComboRace into a feature the TxODDS sales team attaches to feed deals. A "bet this combo for real at your book" deep link is the funnel. The book carries all licensing and custody inside its regulated perimeter, and ComboRace is the engine, funnel, and data layer.
 
 The builder's growth and the sponsor's core feed revenue point the same way.

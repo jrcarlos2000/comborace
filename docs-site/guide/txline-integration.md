@@ -35,9 +35,9 @@ The settlement is not a promise, it is infrastructure. TxLINE publishes Merkle r
 
 Program IDs exist for both mainnet and devnet. The verification model is to fetch the leaf plus its Merkle proof off-chain and check it against the on-chain root. This is what makes no-house settlement real: the pool pays out from a result that anyone can verify, so nobody has to trust an operator to call the winner.
 
-## The free World Cup tier
+## The free tier
 
-TxLINE's free tier covers all 104 World Cup matches plus international friendlies, which is enough to build, record, and demo against real games without a paid subscription in the way.
+TxLINE's free tier covers a full slate of live tournament matches plus international friendlies, which is enough to build, record, and demo against real games without a paid subscription in the way.
 
 The one honest caveat is cadence. On the free tier, odds arrive in 60-second batches, not as a sub-second live stream. Real-time updates are the paid tier. The delay is fair, since everyone in a lobby shares the same 60 seconds, but it pushes the "feels live" work onto the client. ComboRace tweens each car between batches, eases into every fresh snapshot instead of snapping, and exploits minute-drift so a scoreless match still shows motion. Without that smoothing a naive integration would teleport once a minute and look laggy.
 

@@ -65,12 +65,35 @@ export default {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        // Landing-only: cars drift along their lane so a resting position still reads as a live,
+        // moving oracle number rather than a static graphic. Pure transform, honors reduced motion.
+        driftLead: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(15px)' },
+        },
+        driftMid: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(-11px)' },
+        },
+        driftTrail: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '45%': { transform: 'translateX(-17px)' },
+          '75%': { transform: 'translateX(7px)' },
+        },
+        softPulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.4' },
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out',
         'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
         dropdownOpen: 'dropdownOpen 0.3s ease-out forwards',
         marquee: 'marquee 120s linear infinite',
+        'drift-lead': 'driftLead 4.4s ease-in-out infinite',
+        'drift-mid': 'driftMid 3.6s ease-in-out infinite',
+        'drift-trail': 'driftTrail 5.2s ease-in-out infinite',
+        'soft-pulse': 'softPulse 1.7s ease-in-out infinite',
       },
     },
   },
