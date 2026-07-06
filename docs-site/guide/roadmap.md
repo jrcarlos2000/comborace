@@ -6,7 +6,7 @@ ComboRace today is the wallet-free replay experience plus a real Anchor escrow a
 
 The public MVP runs on the free 60-second feed, smoothed hard on the client so it still feels live. The next step is true real-time, which is the paid TxLINE tier with sub-second updates.
 
-On a real-time feed the cars move on every odds tick instead of every batch, so the interpolation becomes a finishing touch rather than the thing holding the illusion together. That unlocks genuine in-play betting: joining a pool after kickoff, live copy-a-car, and reacting to the match as it unfolds instead of locking a grid at the whistle.
+On a real-time feed the cars move on every odds tick instead of every batch, so the interpolation becomes a finishing touch rather than the thing holding the illusion together. That opens genuine in-play betting: joining a pool after kickoff, live copy-a-car, and reacting to the match as it unfolds instead of locking a grid at the whistle.
 
 ## On-chain devnet settlement
 

@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import type { MatchTick } from '../mock/mockFeed';
 
-const HOME = 'ARG';
-const AWAY = 'FRA';
+// The bundled wallet-free replay is a real recorded match: Mexico vs England (final 2-3).
+const HOME = 'MEX';
+const AWAY = 'ENG';
 
 export function Scoreboard({
   tick,

@@ -3,15 +3,20 @@ import type { LegStatus } from '../feed/types.js';
 
 // TxLINE soccer score encoding -> match state -> leg resolution.
 //
-// Per docs.yaml the scores payload carries a SoccerFixtureScore under `scoreSoccer`, with a
-// `Participant1` and `Participant2`, each a SoccerTotalScore keyed by period (H1, HT, H2, ET1,
-// ET2, PE, ETTotal, Total). Each period is a SoccerScore { Goals, YellowCards, RedCards, Corners }.
-// `participant1IsHome` says which participant is the home side. Match phase is a SoccerFixtureStatus
-// (a one-key object, e.g. { F: {} } for finished, { H2: {} } for the second half) mirrored in the
-// `gameState` string. We read the Total goals for full-match markets and the H1 goals for first-half
-// markets, then resolve each leg against that.
+// Finalized against a REAL recorded fixture (Mexico vs England, txline-dev, 18192996). The live
+// scores payload uses PascalCase keys: the running score is `Score` (a SoccerFixtureScore with
+// `Participant1`/`Participant2`, each a per-period map H1/HT/H2/Total of { Goals, YellowCards,
+// RedCards, Corners }), `Participant1IsHome` names the home side, `Clock` is { Running, Seconds }
+// with Seconds the cumulative match clock, and `StatusId` is an INTEGER game-phase code (2=H1,
+// 3=HT, 4=H2, 5=Ended, 10=Ended-after-ET, 13=Ended-after-pens). `GameState` is unreliable here
+// (always "scheduled"), so ended-detection reads StatusId. The documented / synthetic feed instead
+// nests the score under `scoreSoccer`, the phase as a one-key object under `statusSoccerId`
+// (e.g. { F: {} }) and a lowercase `clock`; all reads below are case-insensitive so both work.
+// We read Total goals for full-match markets and H1 goals for first-half markets.
 
+// Finished game-phase names (documented / synthetic) and integer codes (real feed): F, FET, FPE.
 const ENDED_STATUS = new Set(['F', 'FET', 'FPE', 'END', 'AET', 'AP']);
+const ENDED_STATUS_IDS = new Set([5, 10, 13]);
 
 // Full-time whistle at 90 plus typical stoppage, aligned with app/src/mock/probability.ts.
 export const WHISTLE = 93;
@@ -57,16 +62,24 @@ function periodStat(total: Record<string, unknown> | null, period: string, stat:
   return num(pick(sub, [stat]));
 }
 
-// The match-phase code, read from the one-key SoccerFixtureStatus object or the gameState string.
-function statusCode(root: Record<string, unknown> | null): string {
-  const status = asRecord(pick(root, ['statusSoccerId', 'statusId', 'status']));
-  if (status) {
-    const keys = Object.keys(status);
-    if (keys.length > 0) return keys[0].toUpperCase();
+// Whether the match has finished, from the integer StatusId (real feed), the one-key
+// SoccerFixtureStatus object (documented / synthetic feed) or the gameState string.
+function isEnded(root: Record<string, unknown> | null): boolean {
+  const status = pick(root, ['statusSoccerId', 'statusId', 'status']);
+  if (typeof status === 'number') return ENDED_STATUS_IDS.has(status);
+  if (typeof status === 'string' && status.trim() !== '') {
+    const n = Number(status);
+    if (Number.isFinite(n) && String(n) === status.trim()) return ENDED_STATUS_IDS.has(n);
+    return ENDED_STATUS.has(status.toUpperCase());
+  }
+  const rec = asRecord(status);
+  if (rec) {
+    const keys = Object.keys(rec);
+    if (keys.length > 0 && ENDED_STATUS.has(keys[0].toUpperCase())) return true;
   }
   const gameState = pick(root, ['gameState', 'state']);
-  if (typeof gameState === 'string' && gameState.trim() !== '') return gameState.toUpperCase();
-  return '';
+  if (typeof gameState === 'string' && gameState.trim() !== '') return ENDED_STATUS.has(gameState.toUpperCase());
+  return false;
 }
 
 // Decode a raw scores payload into the feed-agnostic match state the leg logic consumes.
@@ -98,7 +111,7 @@ export function decodeScore(rawScores: unknown, fallbackMinute: number): Decoded
     periodStat(awayTotal, 'Total', 'YellowCards') +
     periodStat(awayTotal, 'Total', 'RedCards');
 
-  const ended = ENDED_STATUS.has(statusCode(root));
+  const ended = isEnded(root);
   const isFullTime = ended || minute >= WHISTLE;
 
   return { minute, home, away, h1Home, h1Away, corners, cards, isFullTime, ended };

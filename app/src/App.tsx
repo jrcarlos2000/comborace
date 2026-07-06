@@ -12,7 +12,7 @@ type View = 'landing' | 'lobby' | 'race' | 'flywheel';
 
 // The static public bundle has no server behind it, so "Watch a race" plays a client-side replay
 // there; the Docker / live build compiles the flag on and streams the WebSocket feed instead.
-const WATCH_SOURCE: FeedSource = __COMBORACE_LIVE_FEED__ ? 'server' : 'local';
+const WATCH_SOURCE: FeedSource = __COMBORACE_LIVE_FEED__ ? 'server' : 'replay';
 
 // The wallet-free "Watch a race" field: the four house cars, with the over-goals car cast as you
 // so the demo lands the "you received" beat when it cashes.

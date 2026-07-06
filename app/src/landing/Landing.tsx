@@ -137,7 +137,7 @@ function Hero({ onWatch, onLobby }: { onWatch: () => void; onLobby: () => void }
             Start a private lobby
           </button>
         </div>
-        <p className="mt-4 text-sm text-grey-400">Plays a full replay. No wallet, no signup.</p>
+        <p className="mt-4 text-sm text-grey-400">It plays a full replay, no wallet or signup needed.</p>
       </div>
 
       <Reveal delayMs={120}>
@@ -267,67 +267,61 @@ function Lane({ car, name, legs, pct, pos, drift, tone, chip }: LaneDef) {
 /* How it works                                                               */
 /* -------------------------------------------------------------------------- */
 
+// The three beats of a race, laid out as an asymmetric bento instead of three identical columns:
+// a tall "pick" card down the left, then the wider "race" and "pot" cards stacked on the right,
+// with the pot card mirrored so the money shot sits on the outside edge.
 function HowItWorks() {
   return (
-    <section id="how" className="scroll-mt-24 border-t border-grey-200 py-16 lg:py-24">
-      <Reveal>
+    <section id="how" className="scroll-mt-24 border-t border-grey-200 py-20 lg:py-28">
+      <Reveal className="max-w-xl">
         <h2 className="text-[30px] font-black leading-tight tracking-tight text-grey-950 sm:text-[38px]">
           How a race works
         </h2>
-        <p className="mt-3 max-w-md text-base text-grey-500">Three moves. No box scores, no spreadsheet.</p>
+        <p className="mt-3 text-base text-grey-500">Three moves, and none of them need a spreadsheet.</p>
       </Reveal>
 
-      <div className="mt-9 grid gap-4 lg:grid-cols-3 lg:gap-5">
-        <Reveal delayMs={0}>
-          <StepCard n={1} title="Pick a car" body="Every car is a goals parlay. Safe picks sit shorter, long shots pay more.">
-            <PickVisual />
-          </StepCard>
+      <div className="mt-10 grid gap-4 lg:grid-cols-12 lg:grid-rows-2 lg:gap-5">
+        <Reveal className="lg:col-span-4 lg:row-span-2" delayMs={0}>
+          <article className="flex h-full flex-col rounded-3xl border border-grey-200 bg-track-panel p-6 shadow-card-drop">
+            <h3 className="text-lg font-bold text-grey-950">Pick a car</h3>
+            <p className="mt-2 text-sm leading-relaxed text-grey-500">
+              Every car is a goals parlay. Safe picks sit shorter, long shots pay more.
+            </p>
+            <div className="mt-5 flex-1">
+              <PickVisual />
+            </div>
+          </article>
         </Reveal>
-        <Reveal delayMs={90}>
-          <StepCard
-            n={2}
-            title="Watch it race"
-            body="Positions move on live de-vigged odds. A goal surges your car, a dead leg blows it up."
-          >
-            <RaceVisual />
-          </StepCard>
+
+        <Reveal className="lg:col-span-8" delayMs={90}>
+          <article className="grid h-full items-center gap-5 rounded-3xl border border-grey-200 bg-track-panel p-6 shadow-card-drop sm:grid-cols-[minmax(0,0.9fr)_1.3fr]">
+            <div>
+              <h3 className="text-lg font-bold text-grey-950">Watch it race</h3>
+              <p className="mt-2 text-sm leading-relaxed text-grey-500">
+                Positions move on live de-vigged odds. A goal surges your car, a dead leg blows it up.
+              </p>
+            </div>
+            <div className="min-w-0">
+              <RaceVisual />
+            </div>
+          </article>
         </Reveal>
-        <Reveal delayMs={180}>
-          <StepCard
-            n={3}
-            title="Last car takes the pot"
-            body="At the whistle, the surviving car on the best line takes the whole pool."
-          >
-            <PotVisual />
-          </StepCard>
+
+        <Reveal className="lg:col-span-8" delayMs={180}>
+          <article className="grid h-full items-center gap-5 rounded-3xl border border-grey-200 bg-track-panel p-6 shadow-card-drop sm:grid-cols-[1.1fr_minmax(0,0.95fr)]">
+            <div className="sm:order-2">
+              <h3 className="text-lg font-bold text-grey-950">Last car takes the pot</h3>
+              <p className="mt-2 text-sm leading-relaxed text-grey-500">
+                At the whistle, the surviving car on the best line takes the whole pool.
+              </p>
+            </div>
+            <div className="min-w-0 sm:order-1">
+              <PotVisual />
+            </div>
+          </article>
         </Reveal>
       </div>
     </section>
-  );
-}
-
-function StepCard({
-  n,
-  title,
-  body,
-  children,
-}: {
-  n: number;
-  title: string;
-  body: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex h-full flex-col rounded-3xl border border-grey-200 bg-track-panel p-5 shadow-card-drop">
-      <div className="mb-4 flex-1">{children}</div>
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/10 font-mono text-xs font-black text-brand ring-1 ring-brand/25">
-          {n}
-        </span>
-        <h3 className="text-lg font-bold text-grey-950">{title}</h3>
-      </div>
-      <p className="mt-2 text-sm leading-relaxed text-grey-500">{body}</p>
-    </div>
   );
 }
 
@@ -482,61 +476,70 @@ function ProbabilityAxis() {
 /* Under the hood                                                             */
 /* -------------------------------------------------------------------------- */
 
+// Deliberately NOT another card grid. The heading and the honest-build note sit in a left rail,
+// and the three technical facts read as a plain hairline-divided list on the right, so this
+// section has a different texture (lines, not boxes) from the bento above it.
 function UnderTheHood() {
   return (
-    <section id="hood" className="scroll-mt-24 border-t border-grey-200 py-16 lg:py-24">
-      <Reveal>
-        <h2 className="text-[30px] font-black leading-tight tracking-tight text-grey-950 sm:text-[38px]">
-          What it actually runs on
-        </h2>
-        <p className="mt-3 max-w-lg text-base text-grey-500">
-          Real odds, private pools, and a settlement you can check. Stated plainly.
-        </p>
-      </Reveal>
-
-      <div className="mt-9 grid gap-4 lg:grid-cols-3 lg:gap-5">
-        <Reveal className="lg:col-span-2" delayMs={0}>
-          <div className="flex h-full flex-col rounded-3xl border border-grey-200 bg-track-panel p-6 shadow-card-drop">
-            <h3 className="text-xl font-bold text-grey-950">Live odds from TxLINE</h3>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-grey-600">
-              Each car&apos;s position is a real number from TxLINE, the on-chain sports-data oracle
-              on Solana. Its odds arrive already de-vigged, so a car shows the oracle&apos;s own
-              probability that the parlay cashes, not a model&apos;s guess.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <TechTag>de-vigged Pct</TechTag>
-              <TechTag>Solana oracle</TechTag>
-              <TechTag>goals markets</TechTag>
-            </div>
-          </div>
+    <section id="hood" className="scroll-mt-24 border-t border-grey-200 py-20 lg:py-28">
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <Reveal className="lg:col-span-5">
+          <h2 className="text-[30px] font-black leading-tight tracking-tight text-grey-950 sm:text-[38px]">
+            What it actually runs on
+          </h2>
+          <p className="mt-3 max-w-md text-base text-grey-500">
+            The odds are real, the pools are private, and the settlement is on-chain where anyone can
+            check it.
+          </p>
+          <p className="mt-6 max-w-md rounded-2xl border border-grey-200 bg-grey-50 px-5 py-4 text-sm leading-relaxed text-grey-500">
+            This public build plays a recorded match and simulates the payout, so you can watch a full
+            race without a wallet. Live pools stay invite-only.
+          </p>
         </Reveal>
 
-        <Reveal delayMs={90}>
-          <div className="grid h-full gap-4">
-            <HoodCard title="Private pools" body="Open a lobby, invite friends, ante in. No open house and no strangers in your race." />
-            <HoodCard
-              title="On-chain settlement"
-              body="The pot is escrowed and paid to the winner from the verifiable match result."
-            />
-          </div>
+        <Reveal className="lg:col-span-7" delayMs={90}>
+          <dl className="divide-y divide-grey-200">
+            <HoodFact title="Live odds from TxLINE" tags={['de-vigged Pct', 'Solana oracle', 'goals markets']}>
+              Each car&apos;s position is a real number from TxLINE, the on-chain sports-data oracle on
+              Solana. Its odds arrive already de-vigged, so a car shows the oracle&apos;s own probability
+              that the parlay cashes, not a model&apos;s guess.
+            </HoodFact>
+            <HoodFact title="Private pools">
+              Open a lobby, invite friends, and everyone antes in. No open house and no strangers in
+              your race.
+            </HoodFact>
+            <HoodFact title="On-chain settlement">
+              The pot is escrowed and paid to the winner from the verifiable match result.
+            </HoodFact>
+          </dl>
         </Reveal>
       </div>
-
-      <Reveal delayMs={120}>
-        <p className="mt-5 rounded-2xl border border-grey-200 bg-grey-50 px-5 py-4 text-sm leading-relaxed text-grey-500">
-          This public build plays a recorded match and simulates the payout, so you can watch a full
-          race without a wallet. Live pools stay invite-only.
-        </p>
-      </Reveal>
     </section>
   );
 }
 
-function HoodCard({ title, body }: { title: string; body: string }) {
+function HoodFact({
+  title,
+  tags,
+  children,
+}: {
+  title: string;
+  tags?: string[];
+  children: ReactNode;
+}) {
   return (
-    <div className="flex flex-col rounded-3xl border border-grey-200 bg-track-panel p-5 shadow-card-drop">
-      <h3 className="text-base font-bold text-grey-950">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-grey-500">{body}</p>
+    <div className="py-6 first:pt-0 last:pb-1">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+        <dt className="text-lg font-bold text-grey-950">{title}</dt>
+        {tags ? (
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <TechTag key={tag}>{tag}</TechTag>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <dd className="mt-2 max-w-xl text-sm leading-relaxed text-grey-600">{children}</dd>
     </div>
   );
 }
@@ -561,7 +564,7 @@ function FinalCta({ onWatch }: { onWatch: () => void }) {
           Pick a car. Watch it race.
         </h2>
         <p className="mx-auto mt-4 max-w-md text-base text-grey-500 sm:text-lg">
-          One tap starts a full replay. No wallet, no signup, no soccer knowledge required.
+          One tap starts a full replay, with no wallet and no soccer knowledge required.
         </p>
         <div className="mt-8 flex justify-center">
           <button onClick={onWatch} className="btn-hero px-8 py-4 text-lg">

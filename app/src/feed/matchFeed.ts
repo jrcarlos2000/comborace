@@ -1,7 +1,7 @@
 import { createMockFeed, type MatchTick } from '../mock/mockFeed';
 import type { ComboDef } from '../mock/combos';
 
-export type FeedSource = 'server' | 'local';
+export type FeedSource = 'server' | 'local' | 'replay';
 export type FeedStatus = 'connecting' | 'live' | 'local';
 
 export interface MatchFeedOptions {
@@ -179,7 +179,67 @@ function createServerFeed(opts: MatchFeedOptions): MatchFeed {
   };
 }
 
+// Replays a recorded real match bundled as a static JSON file (app/public/real-match.json), so the
+// wallet-free landing plays a genuine TxLINE recording with no server. Falls back to the synthetic
+// mock if the file cannot be fetched.
+function createFileReplayFeed(opts: MatchFeedOptions, url = '/real-match.json'): MatchFeed {
+  const tickMs = 450;
+  let stopped = false;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let fallback: MatchFeed | null = null;
+
+  function startFallback(): void {
+    if (stopped || fallback) return;
+    fallback = createMockFeed({ combos: opts.combos, onTick: opts.onTick, onEnd: opts.onEnd });
+    opts.onStatus?.('local');
+    fallback.start();
+  }
+
+  function play(ticks: MatchTick[]): void {
+    let i = 0;
+    opts.onStatus?.('local');
+    const step = (): void => {
+      if (stopped || i >= ticks.length) return;
+      const tick = ticks[i++];
+      opts.onTick(tick);
+      if (isTerminal(tick)) {
+        opts.onEnd?.();
+        return;
+      }
+      timer = setTimeout(step, tickMs);
+    };
+    step();
+  }
+
+  return {
+    start(): void {
+      if (stopped) return;
+      fetch(url)
+        .then((r) => r.json())
+        .then((data: unknown) => {
+          if (stopped) return;
+          const ticks = Array.isArray(data) ? data.filter(isMatchTick) : [];
+          if (ticks.length === 0) startFallback();
+          else play(ticks);
+        })
+        .catch(() => startFallback());
+    },
+    stop(): void {
+      stopped = true;
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      if (fallback) {
+        fallback.stop();
+        fallback = null;
+      }
+    },
+  };
+}
+
 export function createMatchFeed(opts: MatchFeedOptions): MatchFeed {
+  if ((opts.source ?? 'server') === 'replay') return createFileReplayFeed(opts);
   if ((opts.source ?? 'server') === 'local') {
     const feed = createMockFeed({ combos: opts.combos, onTick: opts.onTick, onEnd: opts.onEnd });
     return {
