@@ -2,21 +2,21 @@
 // animation tokens live in tailwind.config.js; composed @apply classes live in
 // src/styles/components.css; @font-face lives in src/styles/fonts.css.
 //
-// Ported from Stormbit's refined purple + grey + supporting scales. ComboRace runs the
-// palette on a LIGHT surface, so the pale grey shades carry the page and card surfaces and
-// the deep grey shades carry text. There are no neon or fluorescent values here: the old
-// electric car set is replaced by the muted `carColors` series below.
+// A clean blue accent (centered on the docs blue #2f68d8) over a grey + supporting scale set.
+// ComboRace runs the palette on a LIGHT surface, so the pale grey shades carry the page and card
+// surfaces and the deep grey shades carry text. There are no neon or fluorescent values here: the
+// old electric car set is replaced by the muted `carColors` series below.
 
 const colors = {
   brand: {
-    DEFAULT: "#7E5DFE",
-    deep: "#6631F6",
-    purple: { light: "#A089FF" },
+    DEFAULT: "#2F68D8",
+    deep: "#1E4AA6",
+    purple: { light: "#8FB1EA" },
     red: { light: "#FF9797" },
   },
 
   // Light race-track surfaces. A soft cool off-white page with near-white raised cards, so the
-  // engineered shadows read and the purple brand pops against the neutral field.
+  // engineered shadows read and the blue brand pops against the neutral field.
   track: {
     // `base` is the true page background (the softest neutral tone); `bg` is the frosted
     // near-white used for sticky headers and overlays. Focus-ring offsets read against `base`
@@ -35,18 +35,22 @@ const colors = {
   cash: "#07966A",
   gold: "#B7791F",
 
+  // The brand accent ramp. Kept under the `purple` token name for continuity with the existing
+  // `-purple-*` utility classes (focus rings, borders, text gradient), but the values are the
+  // clean blue centered on the docs blue #2f68d8: 500 is the base, 600 the hover step, 700 the
+  // active step, 400 the focus ring.
   purple: {
-    50: "#F4F2FF",
-    100: "#EAE8FF",
-    200: "#DBD4FF",
-    300: "#BAB1FF",
-    400: "#9885FF",
-    500: "#7E5DFE",
-    600: "#6631F6",
-    700: "#571FE2",
-    800: "#4819BE",
-    900: "#3E179B",
-    950: "#240C69",
+    50: "#EEF3FC",
+    100: "#DAE6F9",
+    200: "#BCD0F3",
+    300: "#8FB1EA",
+    400: "#5A8CE6",
+    500: "#2F68D8",
+    600: "#255AC2",
+    700: "#1E4AA6",
+    800: "#1A3E8A",
+    900: "#17335F",
+    950: "#0F1F3D",
   },
   grey: {
     50: "#F8F8F8",
@@ -121,7 +125,7 @@ const colors = {
 export const crashRgb = "229,52,46";
 export const cashRgb = "7,150,106";
 export const goldRgb = "183,121,31";
-export const brandRgb = "126,93,254";
+export const brandRgb = "47,104,216";
 
 export interface CarColor {
   name: string;

@@ -10,8 +10,8 @@
 :root {
   color-scheme: light;
   --app-base: #edeef2;
-  --brand-rgb: 126, 93, 254;
-  --brand-deep-rgb: 102, 49, 246;
+  --brand-rgb: 47, 104, 216;
+  --brand-deep-rgb: 30, 74, 166;
 }
 
 html,
@@ -129,7 +129,7 @@ body {
 }
 
 .is-you-lane {
-  background: linear-gradient(90deg, rgba(126, 93, 254, 0.1), transparent 45%);
+  background: linear-gradient(90deg, rgba(47, 104, 216, 0.1), transparent 45%);
 }
 
 .you-badge {
@@ -140,8 +140,8 @@ body {
   padding: 1px 5px;
   border-radius: 5px;
   color: #fff;
-  background: rgba(126, 93, 254, 0.95);
-  box-shadow: 0 2px 6px -1px rgba(102, 49, 246, 0.35);
+  background: rgba(47, 104, 216, 0.95);
+  box-shadow: 0 2px 6px -1px rgba(30, 74, 166, 0.35);
 }
 
 .car-sprite.is-you::before {
@@ -149,7 +149,7 @@ body {
   position: absolute;
   inset: -3px;
   border-radius: 17px;
-  border: 2px solid rgba(126, 93, 254, 0.7);
+  border: 2px solid rgba(47, 104, 216, 0.7);
   pointer-events: none;
 }
 
@@ -172,8 +172,8 @@ body {
    accent rather than a decorative medal tint. */
 .pos-badge.pos-lead {
   color: #fff;
-  background: linear-gradient(180deg, #8e75ef, #6631f6);
-  box-shadow: 0 2px 8px -3px rgba(102, 49, 246, 0.5);
+  background: linear-gradient(180deg, #5a8ce6, #1e4aa6);
+  box-shadow: 0 2px 8px -3px rgba(30, 74, 166, 0.5);
 }
 
 /* Faint asphalt lines that scroll left the whole time, so the track reads as moving even

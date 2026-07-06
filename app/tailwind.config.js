@@ -14,17 +14,17 @@ export default {
       },
       boxShadow: {
         // Danny's engineered light-surface shadows. The neutral button carries the outer edge
-        // plus a soft inner top-highlight; primary/cta swap the highlight to purple.
+        // plus a soft inner top-highlight; primary/cta swap the highlight to the brand blue.
         button: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px rgba(240, 240, 240, 0.8) inset',
-        primary: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px #8E75EF inset',
-        cta: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px #8E75EF inset, 0px 16px 34px -12px rgba(126, 93, 254, 0.45)',
-        'primary-inset': 'inset 0px -5px 4px 0px #8E75EF',
+        primary: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px #5A8CE6 inset',
+        cta: '0px 0px 2.5px 0px rgba(0, 0, 0, 0.34), 0px -5px 4px 0px #5A8CE6 inset, 0px 16px 34px -12px rgba(47, 104, 216, 0.45)',
+        'primary-inset': 'inset 0px -5px 4px 0px #5A8CE6',
         'pill-highlight': 'inset 2px 3px 4px 0px rgba(255, 255, 255, 0.56)',
         // Soft card drop: the signature ambient depth that makes a raised white surface read.
         'card-drop': '0px 0px 56.6px 0px rgba(0, 0, 0, 0.09)',
         'card-raise': '0px 1px 4px 0px rgba(0, 0, 0, 0.06), 0px 12px 32px -18px rgba(0, 0, 0, 0.18)',
-        'purple-glow': '0px 0px 56.6px 0px rgba(145, 115, 255, 0.12)',
-        'brand-glow': '0 0 40px -6px rgba(126, 93, 254, 0.35)',
+        'purple-glow': '0px 0px 56.6px 0px rgba(90, 140, 230, 0.12)',
+        'brand-glow': '0 0 40px -6px rgba(47, 104, 216, 0.35)',
         'tab-active': '2px 2px 4px 0px rgba(0, 0, 0, 0.09), inset 3px 3px 4px 0px rgba(255, 255, 255, 0.25)',
         'token-badge': '1.267px 1.267px 2.534px 0px rgba(0, 0, 0, 0.25), inset 1.901px 1.901px 4px 0px rgba(255, 255, 255, 0.39)',
         box: '0px 0px 56.6px 0px rgba(0, 0, 0, 0.09)',
@@ -33,20 +33,20 @@ export default {
         // down inside a crafted groove rather than floating on the pure-white hero panel.
         lane: 'inset 0px 2px 4px 0px rgba(0, 0, 0, 0.07), inset 0px -1px 1px 0px rgba(255, 255, 255, 0.9), inset 0px 0px 0px 1px rgba(0, 0, 0, 0.03)',
         chip: 'inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.14)',
-        // Selected card: a thin purple identity ring (selection = accent) over a NEUTRAL grey
+        // Selected card: a thin blue identity ring (selection = accent) over a NEUTRAL grey
         // lift, so depth reads in black alphas instead of a coloured neon stain.
-        'car-select': '0 0 0 1.5px rgba(126, 93, 254, 0.6), 0 1px 4px rgba(0, 0, 0, 0.06), 0 12px 32px -18px rgba(0, 0, 0, 0.18)',
+        'car-select': '0 0 0 1.5px rgba(47, 104, 216, 0.6), 0 1px 4px rgba(0, 0, 0, 0.06), 0 12px 32px -18px rgba(0, 0, 0, 0.18)',
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(180deg, #7e5dfe 0%, #997fff 100%)',
+        'gradient-primary': 'linear-gradient(180deg, #2f68d8 0%, #5a8ce6 100%)',
         'gradient-cancel': 'linear-gradient(180deg, #ff7f81 0%, #ff5757 100%)',
         'gradient-default': 'linear-gradient(180deg, #f3f3f3 0%, #fff 100%)',
-        'gradient-purple-text': 'linear-gradient(180deg, #7e5dfe 0%, #4819be 100%)',
+        'gradient-purple-text': 'linear-gradient(180deg, #2f68d8 0%, #1e4aa6 100%)',
         'gradient-ltv-pill': 'linear-gradient(180deg, #e8f9ff 0%, #a4e5ff 100%)',
-        'gradient-exit-pill': 'linear-gradient(180deg, #f1f0ff 0%, #c4beff 100%)',
-        'gradient-track': 'radial-gradient(130% 65% at 50% -12%, rgba(126, 93, 254, 0.10), transparent 60%), #edeef2',
+        'gradient-exit-pill': 'linear-gradient(180deg, #eef3fc 0%, #bcd0f3 100%)',
+        'gradient-track': 'radial-gradient(130% 65% at 50% -12%, rgba(47, 104, 216, 0.10), transparent 60%), #edeef2',
         'gradient-panel': 'linear-gradient(180deg, #ffffff 0%, #fafafb 100%)',
-        'gradient-brand-soft': 'linear-gradient(180deg, rgba(126, 93, 254, 0.10) 0%, rgba(102, 49, 246, 0.03) 100%)',
+        'gradient-brand-soft': 'linear-gradient(180deg, rgba(47, 104, 216, 0.10) 0%, rgba(30, 74, 166, 0.03) 100%)',
       },
       keyframes: {
         fadeIn: {
