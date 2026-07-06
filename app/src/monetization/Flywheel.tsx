@@ -7,18 +7,18 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
       <div className="mb-6 flex items-center gap-3">
         <button
           onClick={onBack}
-          className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition duration-150 hover:border-white/20 hover:bg-white/[0.08] hover:text-white active:scale-95"
+          className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-grey-200 bg-white text-grey-600 shadow-button transition duration-150 hover:border-grey-300 hover:text-grey-900 active:scale-95"
           aria-label="Back"
         >
           &#8592;
         </button>
-        <span className="text-sm font-bold text-white/80">License ComboRace</span>
+        <span className="text-sm font-bold text-grey-800">License ComboRace</span>
       </div>
 
-      <h1 className="text-[30px] font-black leading-tight tracking-tight text-white">
+      <h1 className="text-[30px] font-black leading-tight tracking-tight text-grey-950">
         A demand engine for the <span className="text-brand">TxLINE feed</span>
       </h1>
-      <p className="mt-3 text-sm leading-relaxed text-white/60">
+      <p className="mt-3 text-sm leading-relaxed text-grey-600">
         ComboRace is a skill-game watch-along and a B2B widget. Every unit of growth, fan or
         book, pulls through a paid real-time TxLINE subscription. The builder&apos;s growth and the
         sponsor&apos;s feed revenue are the same arrow.
@@ -42,26 +42,26 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
         />
       </div>
 
-      <div className="mt-7 rounded-2xl border border-brand/25 bg-brand/[0.06] p-4">
-        <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/90">the number that switches you</div>
+      <div className="mt-7 rounded-2xl border border-brand/25 bg-brand/[0.05] p-4">
+        <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand">the number that switches you</div>
         <div className="mt-2 flex items-end gap-6">
           <div>
             <div className="font-mono text-3xl font-black text-cash">2%</div>
-            <div className="mt-0.5 text-[11px] text-white/50">ComboRace track fee</div>
+            <div className="mt-0.5 text-[11px] text-grey-500">ComboRace track fee</div>
           </div>
-          <div className="pb-1 text-white/30">vs</div>
+          <div className="pb-1 text-grey-400">vs</div>
           <div>
-            <div className="font-mono text-3xl font-black text-white/85">20%+</div>
-            <div className="mt-0.5 text-[11px] text-white/50">a book&apos;s compounded combo vig</div>
+            <div className="font-mono text-3xl font-black text-grey-900">20%+</div>
+            <div className="mt-0.5 text-[11px] text-grey-500">a book&apos;s compounded combo vig</div>
           </div>
         </div>
-        <p className="mt-3 text-[12px] leading-relaxed text-white/45">
-          Possible because TxLINE&apos;s <span className="text-white/70">Pct</span> is already de-margined, so a
+        <p className="mt-3 text-[12px] leading-relaxed text-grey-500">
+          Possible because TxLINE&apos;s <span className="font-semibold text-grey-700">Pct</span> is already de-margined, so a
           four-leg combo costs about 2% here instead of stacking a fresh margin on every leg.
         </p>
       </div>
 
-      <div className="mt-8 rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 text-center text-[11px] leading-relaxed text-white/45">
+      <div className="mt-8 rounded-xl border border-grey-200 bg-grey-50 px-4 py-3 text-center text-[11px] leading-relaxed text-grey-500">
         Interested in a white-label watch-along? This screen is the pitch surface. The live pool,
         settlement and B2B deal flow are owner-gated, never an open public sportsbook.
       </div>
@@ -71,13 +71,13 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
 
 function FlywheelStep({ n, title, body }: { n: number; title: string; body: string }) {
   return (
-    <div className="flex gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand/15 font-mono text-sm font-black text-brand ring-1 ring-brand/25">
+    <div className="surface-card flex gap-3 p-4">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand/10 font-mono text-sm font-black text-brand ring-1 ring-brand/25">
         {n}
       </span>
       <div>
-        <div className="text-sm font-bold text-white/90">{title}</div>
-        <div className="mt-1 text-[12px] leading-relaxed text-white/55">{body}</div>
+        <div className="text-sm font-bold text-grey-900">{title}</div>
+        <div className="mt-1 text-[12px] leading-relaxed text-grey-500">{body}</div>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ const COACH_KEY = 'comborace.coach.v1';
 
 const STEPS: { accent: string; title: string; body: string }[] = [
   {
-    accent: 'text-white',
+    accent: 'text-grey-950',
     title: 'Position = your live chance',
     body: 'Each car sits at the live chance its combo still cashes. Further right means closer to paying out.',
   },
@@ -50,24 +50,24 @@ export function Coach({ onDone }: { onDone: () => void }) {
   const s = STEPS[step];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center">
-      <div className="moment-pop w-full max-w-sm rounded-3xl border border-white/10 bg-track-panel p-5 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-grey-950/40 p-4 backdrop-blur-sm sm:items-center">
+      <div className="moment-pop w-full max-w-sm rounded-3xl border border-grey-200 bg-track-panel p-5 shadow-card-drop">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">how to read the track</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-grey-400">how to read the track</span>
           <button onClick={finish} className="btn-ghost text-[11px] font-semibold" aria-label="Skip">
             Skip
           </button>
         </div>
 
         <div className={`mt-4 text-xl font-black tracking-tight ${s.accent}`}>{s.title}</div>
-        <p className="mt-2 text-sm leading-relaxed text-white/60">{s.body}</p>
+        <p className="mt-2 text-sm leading-relaxed text-grey-600">{s.body}</p>
 
         <div className="mt-5 flex items-center justify-between">
           <div className="flex gap-1.5" aria-hidden="true">
             {STEPS.map((_, i) => (
               <span
                 key={i}
-                className={`h-1.5 rounded-full transition-all ${i === step ? 'w-5 bg-brand' : 'w-1.5 bg-white/20'}`}
+                className={`h-1.5 rounded-full transition-all ${i === step ? 'w-5 bg-brand' : 'w-1.5 bg-grey-200'}`}
               />
             ))}
           </div>

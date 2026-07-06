@@ -18,28 +18,33 @@ export function OracleTicker({ tick }: { tick: MatchTick | null }) {
 
   return (
     <div className="px-3 pb-1.5">
-      <div className="flex items-center gap-2 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-3 py-2">
+      <div className="surface-card flex items-center gap-2 px-3 py-2">
         <div className="flex shrink-0 items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-brand/80" />
-          <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/45">TxLINE Pct</span>
-          <span className="font-mono text-[9px] tabular-nums text-white/35">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+          <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-grey-500">TxLINE Pct</span>
+          <span className="font-mono text-[9px] tabular-nums text-grey-400">
             {tick.minute}&apos; {tick.score.home}-{tick.score.away}
           </span>
         </div>
         <div className="scrollbar-none flex flex-1 gap-1.5 overflow-x-auto">
+          {/* A pending market that is currently on track to land (Pct >= 50%) is the live,
+              active reading, so it carries the accent; a won leg is a settled positive outcome
+              (green) and a dead leg is a crash (red). Unlikely pending markets stay muted grey. */}
           {markets.map((m) => (
             <span
               key={m.short}
-              className={`inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[9.5px] font-semibold ring-1 ${
+              className={`inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[9.5px] font-semibold shadow-pill-highlight ring-1 ${
                 m.status === 'won'
-                  ? 'bg-cash/12 text-cash ring-cash/25'
+                  ? 'bg-cash/12 text-cash ring-cash/30'
                   : m.status === 'lost'
-                    ? 'bg-crash/12 text-crash ring-crash/25 line-through'
-                    : 'bg-white/[0.04] text-white/60 ring-white/10'
+                    ? 'bg-crash/12 text-crash ring-crash/30 line-through'
+                    : m.pct >= 0.5
+                      ? 'bg-brand/12 text-brand ring-brand/30'
+                      : 'bg-grey-100 text-grey-600 ring-grey-200'
               }`}
             >
               <span>{m.short}</span>
-              <span className="font-mono tabular-nums text-white/80">{Math.round(m.pct * 100)}%</span>
+              <span className="font-mono tabular-nums text-grey-800">{Math.round(m.pct * 100)}%</span>
             </span>
           ))}
         </div>

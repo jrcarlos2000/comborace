@@ -183,11 +183,14 @@ function MuteButton() {
   return (
     <button
       onClick={() => raceAudio.toggleMuted()}
-      className="focus-ring inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition hover:border-white/20 hover:text-white/90"
+      className="focus-ring inline-flex h-7 w-7 items-center justify-center rounded-full border border-grey-200 bg-white text-grey-500 shadow-button transition hover:border-grey-300 hover:text-grey-800"
       aria-label={muted ? 'Unmute race sound' : 'Mute race sound'}
       aria-pressed={muted}
     >
-      <span className="text-[13px] leading-none">{muted ? '\u{1F507}' : '\u{1F50A}'}</span>
+      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none" />
+        {muted ? <path d="m16 9 5 6M21 9l-5 6" /> : <path d="M16 9a3.5 3.5 0 0 1 0 6" />}
+      </svg>
     </button>
   );
 }
@@ -262,22 +265,22 @@ interface FeedBadgeStyle {
 // (amber, pulsing), live reads positive (green, glowing), a fallback reads muted-neutral.
 function feedBadgeStyle(source: FeedSource, status: FeedStatus): FeedBadgeStyle {
   if (source === 'local') {
-    return { label: 'local demo', dot: 'bg-white/40', ring: 'ring-white/10', text: 'text-white/55', glow: false, pulse: false };
+    return { label: 'local demo', dot: 'bg-grey-400', ring: 'ring-grey-200', text: 'text-grey-500', glow: false, pulse: false };
   }
   if (status === 'live') {
-    return { label: 'live feed', dot: 'bg-cash', ring: 'ring-cash/25', text: 'text-white/75', glow: true, pulse: false };
+    return { label: 'live feed', dot: 'bg-cash', ring: 'ring-cash/30', text: 'text-grey-700', glow: true, pulse: false };
   }
   if (status === 'local') {
-    return { label: 'offline replay', dot: 'bg-white/40', ring: 'ring-white/10', text: 'text-white/55', glow: false, pulse: false };
+    return { label: 'offline replay', dot: 'bg-grey-400', ring: 'ring-grey-200', text: 'text-grey-500', glow: false, pulse: false };
   }
-  return { label: 'connecting', dot: 'bg-yellow-400', ring: 'ring-yellow-400/30', text: 'text-white/65', glow: false, pulse: true };
+  return { label: 'connecting', dot: 'bg-yellow-500', ring: 'ring-yellow-400/40', text: 'text-grey-600', glow: false, pulse: true };
 }
 
 function FeedBadge({ source, status }: { source: FeedSource; status: FeedStatus }) {
   const s = feedBadgeStyle(source, status);
   return (
     <span
-      className={`pointer-events-none mt-px inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 ring-1 ${s.ring}`}
+      className={`pointer-events-none mt-px inline-flex items-center gap-1.5 rounded-full border border-grey-200 bg-white px-2 py-0.5 shadow-pill-highlight ring-1 ${s.ring}`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${s.dot} ${s.pulse ? 'animate-pulse' : ''}`}
@@ -361,14 +364,22 @@ function YourStakeBar({
   return (
     <div className="sticky top-[92px] z-20 px-3 pb-1.5 pt-1">
       <div
-        className={`flex items-center justify-between rounded-2xl border bg-white/[0.03] px-3.5 py-2.5 transition-colors ${
-          crashed ? 'border-crash/30' : rising || leading ? 'border-cash/30' : 'border-white/10'
+        className={`flex items-center justify-between rounded-2xl border bg-track-panel px-3.5 py-2.5 shadow-card-raise transition-colors ${
+          crashed
+            ? 'border-crash/40'
+            : leading
+              ? 'border-brand/40'
+              : rising
+                ? 'border-cash/40'
+                : 'border-grey-200'
         }`}
       >
         <div className="min-w-0">
-          <div className="text-[10px] font-semibold uppercase tracking-widest text-white/50">{label}</div>
-          <div className="mt-0.5 truncate text-xs font-semibold text-white/65">
-            {handle} <span className="text-white/40">&middot; racing for <span className="tabular-nums">${pot}</span></span>
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-grey-500">{label}</div>
+          <div className="mt-0.5 flex items-center gap-1.5 truncate text-xs font-semibold text-grey-600">
+            {handle}
+            <span className="h-1 w-1 rounded-full bg-grey-300" />
+            <span className="text-grey-400">racing for <span className="tabular-nums">${pot}</span></span>
           </div>
         </div>
         <div className="shrink-0 text-right">
@@ -377,7 +388,7 @@ function YourStakeBar({
           ) : (
             <div
               className={`font-mono text-xl font-black tabular-nums transition-transform ${
-                cashed ? 'text-cash' : rising ? 'scale-105 text-cash' : 'text-white'
+                cashed ? 'text-cash' : rising ? 'scale-105 text-brand' : 'text-brand'
               }`}
             >
               {Math.round(display)}%

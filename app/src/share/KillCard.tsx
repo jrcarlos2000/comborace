@@ -75,16 +75,17 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
         boxSizing: 'border-box',
         padding: 22,
         borderRadius: 26,
-        background: `radial-gradient(120% 80% at 50% -10%, rgba(${moment.colorRgb},0.22), transparent 60%), linear-gradient(180deg, #10101c, ${colors.track.base})`,
-        border: `1px solid rgba(${accentRgb},0.35)`,
+        background: `radial-gradient(120% 80% at 50% -10%, rgba(${moment.colorRgb},0.1), transparent 60%), linear-gradient(180deg, #ffffff, #f6f6f9)`,
+        border: `1px solid rgba(${accentRgb},0.3)`,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06), 0 18px 44px -22px rgba(0,0,0,0.22)',
         fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        color: '#fff',
+        color: colors.grey[950],
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
         <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: '-0.02em' }}>
           <span style={{ color: colors.brand.DEFAULT }}>COMBO</span>
-          <span style={{ color: '#fff' }}>RACE</span>
+          <span style={{ color: colors.grey[950] }}>RACE</span>
         </span>
         <span
           style={{
@@ -94,8 +95,9 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
             padding: '4px 8px',
             borderRadius: 999,
             color: accent,
-            background: `rgba(${accentRgb},0.14)`,
-            border: `1px solid rgba(${accentRgb},0.4)`,
+            background: `rgba(${accentRgb},0.12)`,
+            border: `1px solid rgba(${accentRgb},0.35)`,
+            boxShadow: 'inset 2px 3px 4px rgba(255,255,255,0.56)',
           }}
         >
           {crash ? 'CRASH CARD' : 'CASH CARD'}
@@ -113,7 +115,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
             height: 10,
             borderRadius: 999,
             background: moment.color,
-            boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.4)',
+            boxShadow: 'inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.2)',
           }}
         />
         <span style={{ fontSize: 19, fontWeight: 800, color: moment.color }}>{moment.handle}</span>
@@ -126,7 +128,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
               padding: '2px 6px',
               borderRadius: 6,
               color: '#fff',
-              background: `rgba(${brandRgb},0.35)`,
+              background: `rgba(${brandRgb},1)`,
             }}
           >
             YOU
@@ -134,7 +136,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
         )}
       </div>
 
-      <div style={{ marginTop: 6, fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>{moment.detail}</div>
+      <div style={{ marginTop: 6, fontSize: 14, color: colors.grey[600] }}>{moment.detail}</div>
 
       <div
         style={{
@@ -154,7 +156,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
           padding: '10px 12px',
           borderRadius: 14,
           background: `rgba(${accentRgb},0.1)`,
-          border: `1px solid rgba(${accentRgb},0.25)`,
+          border: `1px solid rgba(${accentRgb},0.28)`,
           fontSize: 13,
           fontWeight: 700,
           color: accent,
@@ -163,12 +165,33 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
         {moment.potLine}
       </div>
 
-      <div style={{ marginTop: 16, fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>
-        &ldquo;{moment.tagline}&rdquo; &middot; skill game &middot; settled on-chain
+      <div
+        style={{
+          marginTop: 16,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 7,
+          fontSize: 11,
+          color: colors.grey[400],
+        }}
+      >
+        <span>&ldquo;{moment.tagline}&rdquo;</span>
+        <Dot />
+        <span>skill game</span>
+        <Dot />
+        <span>settled on-chain</span>
       </div>
     </div>
   );
 });
+
+function Dot() {
+  return (
+    <span
+      style={{ width: 3, height: 3, borderRadius: 999, background: colors.grey[300], flexShrink: 0 }}
+    />
+  );
+}
 
 function Cell({ label, value }: { label: string; value: string }) {
   return (
@@ -177,14 +200,16 @@ function Cell({ label, value }: { label: string; value: string }) {
         flex: 1,
         padding: '8px 10px',
         borderRadius: 12,
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: colors.grey[50],
+        border: `1px solid ${colors.grey[200]}`,
       }}
     >
-      <div style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>
+      <div style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: colors.grey[400] }}>
         {label}
       </div>
-      <div style={{ fontSize: 18, fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>{value}</div>
+      <div style={{ fontSize: 18, fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: colors.grey[950] }}>
+        {value}
+      </div>
     </div>
   );
 }

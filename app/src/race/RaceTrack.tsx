@@ -341,10 +341,7 @@ function CarLane({
         <span className={`pos-badge${place === 1 && status !== 'crashed' ? ' pos-lead' : ''}`}>
           {status === 'crashed' ? 'X' : place ? `P${place}` : 'P-'}
         </span>
-        <span className="car-chip h-2 w-2 shrink-0" style={{ background: combo.color }} />
-        <span className="truncate text-[12px] font-bold" style={{ color: combo.color }}>
-          {combo.handle}
-        </span>
+        <span className="truncate text-[12px] font-bold text-grey-700">{combo.handle}</span>
         {isYou && <span className="you-badge">YOU</span>}
         {status === 'crashed' && <span className="ml-auto font-mono text-[11px] font-black text-crash">CRASHED</span>}
         {status === 'cashed' && <span className="ml-auto font-mono text-[11px] font-black text-cash">WON</span>}
@@ -386,7 +383,7 @@ function CarLane({
 // loading state that mirrors the four lanes instead of four cars parked at the crash zone.
 function ArenaConnecting() {
   return (
-    <div className="pointer-events-none absolute inset-0 z-10 flex animate-fade-in flex-col justify-center gap-3 bg-track-bg/55 px-4 backdrop-blur-[1px]">
+    <div className="pointer-events-none absolute inset-0 z-10 flex animate-fade-in flex-col justify-center gap-3 bg-track-bg/60 px-4 backdrop-blur-[1px]">
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="flex items-center gap-2.5">
           <span className="skeleton h-2.5 w-2.5 shrink-0 rounded-full" />
@@ -394,7 +391,7 @@ function ArenaConnecting() {
           <span className="skeleton h-7 shrink-0 rounded-lg" style={{ width: `${34 + i * 14}%` }} />
         </div>
       ))}
-      <span className="absolute inset-x-0 bottom-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+      <span className="absolute inset-x-0 bottom-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-grey-400">
         warming up the grid...
       </span>
     </div>
@@ -407,10 +404,10 @@ function PickPill({ short, status }: { short: string; status: 'pending' | 'won' 
       ? 'bg-cash/15 text-cash ring-cash/30'
       : status === 'lost'
         ? 'bg-crash/15 text-crash ring-crash/30 line-through'
-        : 'bg-white/[0.05] text-white/60 ring-white/10';
+        : 'bg-grey-100 text-grey-600 ring-grey-200';
   const mark = status === 'won' ? '✓' : status === 'lost' ? '✕' : '';
   return (
-    <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[9.5px] font-semibold ring-1 ${tone}`}>
+    <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[9.5px] font-semibold shadow-pill-highlight ring-1 ${tone}`}>
       {mark && <span className="text-[9px]">{mark}</span>}
       <span>{short}</span>
     </span>

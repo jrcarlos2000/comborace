@@ -12,13 +12,13 @@ export default defineConfig({
   // Served under comborace.jrcarlos2000.dev/docs so every asset resolves beneath /docs.
   base: '/docs/',
 
-  // The app is dark-only, so the docs match it.
-  appearance: 'force-dark',
+  // The app is a light, crafted Danny surface, so the docs force light too.
+  appearance: false,
   lastUpdated: true,
 
   head: [
     ['link', { rel: 'icon', href: favicon }],
-    ['meta', { name: 'theme-color', content: '#0A0A12' }],
+    ['meta', { name: 'theme-color', content: '#EDEEF2' }],
     ['meta', { property: 'og:title', content: 'ComboRace Docs' }],
     [
       'meta',

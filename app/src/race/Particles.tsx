@@ -24,8 +24,10 @@ interface Particle {
   ringMax: number;
 }
 
-const CONFETTI_PALETTE = [colors.brand.DEFAULT, colors.cash, colors.gold, '#FFFFFF'];
-const EXPLOSION_PALETTE = [colors.crash, colors.gold, colors.grey[200], '#FFFFFF'];
+// Chips composite with plain alpha, so on the light arena the palette leans on the saturated
+// brand/semantic tones plus a dark grey for contrast instead of the white that vanished on light.
+const CONFETTI_PALETTE = [colors.brand.DEFAULT, colors.cash, colors.gold, colors.grey[800]];
+const EXPLOSION_PALETTE = [colors.crash, colors.gold, colors.grey[700], colors.grey[900]];
 
 function rand(min: number, max: number): number {
   return min + Math.random() * (max - min);

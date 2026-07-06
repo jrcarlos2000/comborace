@@ -24,38 +24,38 @@ export function Scoreboard({
   const stateLabel = isFt ? 'FULL TIME' : live ? 'LIVE' : 'REPLAY';
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/5 bg-track-bg/85 px-3 pb-2.5 pt-3 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-grey-200/70 bg-track-bg/85 px-3 pb-2.5 pt-3 backdrop-blur-md">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-black tracking-tight">
             <span className="text-brand">COMBO</span>
-            <span className="text-white">RACE</span>
+            <span className="text-grey-950">RACE</span>
           </span>
           {feed}
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
-            <span className={`h-1.5 w-1.5 rounded-full ${isFt ? 'bg-white/30' : live ? 'live-dot bg-crash' : 'bg-gold/70'}`} />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">{stateLabel}</span>
+            <span className={`h-1.5 w-1.5 rounded-full ${isFt ? 'bg-grey-300' : live ? 'live-dot bg-crash' : 'bg-grey-300'}`} />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-grey-500">{stateLabel}</span>
           </div>
           {action}
         </div>
       </div>
 
-      <div className="mt-2 flex items-center justify-between rounded-xl bg-white/[0.03] px-3 py-2 ring-1 ring-white/5">
+      <div className="mt-2 flex items-center justify-between rounded-xl bg-grey-50 px-3 py-2 ring-1 ring-grey-200">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-white/80">{HOME}</span>
-          <span className="font-mono text-xl font-black tabular-nums text-white">
+          <span className="text-sm font-bold text-grey-700">{HOME}</span>
+          <span className="font-mono text-xl font-black tabular-nums text-grey-950">
             {home}
-            <span className="mx-1 text-white/30">-</span>
+            <span className="mx-1 text-grey-300">-</span>
             {away}
           </span>
-          <span className="text-sm font-bold text-white/80">{AWAY}</span>
+          <span className="text-sm font-bold text-grey-700">{AWAY}</span>
         </div>
         <div className="text-right">
-          <div className="font-mono text-sm font-bold tabular-nums text-white">{clock}</div>
-          <div className="text-[10px] uppercase tracking-wide text-white/45">
-            prize <span className="tabular-nums">${tick?.pot ?? 0}</span>
+          <div className="font-mono text-sm font-bold tabular-nums text-grey-950">{clock}</div>
+          <div className="text-[10px] uppercase tracking-wide text-grey-400">
+            prize <span className="font-semibold tabular-nums text-grey-600">${tick?.pot ?? 0}</span>
           </div>
         </div>
       </div>

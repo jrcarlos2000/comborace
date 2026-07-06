@@ -64,15 +64,15 @@ export function ResultOverlay({
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm sm:items-center">
+    <div className="fixed inset-0 z-40 flex items-end justify-center overflow-y-auto bg-grey-950/40 p-4 backdrop-blur-sm sm:items-center">
       <div className="my-auto w-full max-w-md">
         <div className="mb-3 flex justify-center">
           <ShareCard ref={cardRef} moment={card} />
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-track-panel p-4 shadow-2xl">
+        <div className="rounded-3xl border border-grey-200 bg-track-panel p-4 shadow-card-drop">
           {winnerCrashed && (
-            <div className="mb-2 rounded-xl bg-white/[0.04] px-3 py-2 text-center text-[11px] font-semibold text-white/55 ring-1 ring-white/8">
+            <div className="mb-2 rounded-xl bg-grey-50 px-3 py-2 text-center text-[11px] font-semibold text-grey-500 ring-1 ring-grey-200">
               Every car crashed. The one that got closest to the finish takes the prize.
             </div>
           )}
@@ -87,21 +87,27 @@ export function ResultOverlay({
                 <div
                   key={c.id}
                   className={`flex items-center gap-3 rounded-xl px-3 py-2 ring-1 ${
-                    isWinner ? 'bg-cash/[0.08] ring-cash/25' : 'bg-white/[0.03] ring-white/5'
+                    isWinner ? 'bg-cash/[0.08] ring-cash/30' : 'bg-grey-50 ring-grey-200'
                   }`}
                 >
-                  <span className="w-4 text-center font-mono text-xs text-white/40">{i + 1}</span>
-                  <span className="car-chip h-2.5 w-2.5" style={{ background: c.color }} />
-                  <span className="flex-1 truncate text-sm font-bold" style={{ color: c.color }}>
-                    {c.handle}
-                  </span>
+                  <span className="w-4 text-center font-mono text-xs text-grey-400">{i + 1}</span>
+                  <span className="flex-1 truncate text-sm font-bold text-grey-800">{c.handle}</span>
                   {c.status === 'crashed' ? (
-                    <span className="font-mono text-xs font-bold text-crash">WRECKED</span>
+                    <span className="pill bg-crash/10 text-crash ring-crash/30">
+                      <span className="h-1.5 w-1.5 rounded-full bg-crash" />
+                      wrecked
+                    </span>
                   ) : isWinner && settlement ? (
                     <span className="font-mono text-sm font-bold text-cash">${amount}</span>
+                  ) : c.status === 'cashed' ? (
+                    <span className="pill bg-cash/10 text-cash ring-cash/30">
+                      <span className="h-1.5 w-1.5 rounded-full bg-cash" />
+                      cashed
+                    </span>
                   ) : (
-                    <span className="font-mono text-xs font-bold text-white/50">
-                      {c.status === 'cashed' ? 'CASHED' : 'alive'}
+                    <span className="pill bg-grey-100 text-grey-500 ring-grey-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-grey-400" />
+                      alive
                     </span>
                   )}
                 </div>
@@ -133,9 +139,9 @@ export function ResultOverlay({
 function SettlementLine({ settlement, settling }: { settlement: Settlement | null; settling: boolean }) {
   if (!settlement) {
     return (
-      <div className="flex items-center gap-2 rounded-2xl bg-white/[0.03] px-3 py-2.5 ring-1 ring-white/5">
+      <div className="flex items-center gap-2 rounded-2xl bg-grey-50 px-3 py-2.5 ring-1 ring-grey-200">
         <span className="h-2 w-2 animate-pulse rounded-full bg-brand" />
-        <span className="text-sm font-semibold text-white/70">
+        <span className="text-sm font-semibold text-grey-600">
           {settling ? 'Paying the winner on-chain...' : 'Full time'}
         </span>
       </div>
@@ -145,7 +151,7 @@ function SettlementLine({ settlement, settling }: { settlement: Settlement | nul
   const real = isRealSignature(settlement.signature);
 
   return (
-    <div className="rounded-2xl bg-cash/[0.06] px-3 py-2.5 ring-1 ring-cash/20">
+    <div className="rounded-2xl bg-cash/[0.07] px-3 py-2.5 ring-1 ring-cash/25">
       <div className="flex items-center justify-between">
         <span className="text-sm font-bold text-cash">
           {settlement.youWon ? `You received $${settlement.amount} USDC` : `Paid $${settlement.amount} to ${settlement.winner.combo.handle}`}
@@ -157,13 +163,17 @@ function SettlementLine({ settlement, settling }: { settlement: Settlement | nul
           href={`https://solscan.io/tx/${settlement.signature}?cluster=devnet`}
           target="_blank"
           rel="noreferrer"
-          className="mt-1 block truncate font-mono text-[10px] text-white/35 underline decoration-white/15"
+          className="focus-ring mt-1 flex items-center gap-1.5 truncate rounded font-mono text-[10px] text-grey-400 underline decoration-grey-300"
         >
-          {settlement.signature} &middot; view on Solscan
+          <span className="truncate">{settlement.signature}</span>
+          <span className="h-1 w-1 shrink-0 rounded-full bg-grey-300" />
+          <span className="shrink-0">view on Solscan</span>
         </a>
       ) : (
-        <span className="mt-1 block truncate font-mono text-[10px] text-white/30">
-          settlement simulated &middot; no on-chain tx in this build
+        <span className="mt-1 flex items-center gap-1.5 truncate font-mono text-[10px] text-grey-400">
+          <span className="truncate">settlement simulated</span>
+          <span className="h-1 w-1 shrink-0 rounded-full bg-grey-300" />
+          <span className="shrink-0">no on-chain tx in this build</span>
         </span>
       )}
     </div>
@@ -188,11 +198,11 @@ function TrackFee({ pot }: { pot: number }) {
   }, [target]);
 
   return (
-    <div className="mt-2 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2">
-      <div className="text-[10px] font-semibold uppercase tracking-widest text-white/40">
-        track fee <span className="text-white/25">2% vs a book&apos;s 20%+ vig</span>
+    <div className="mt-2 flex items-center justify-between rounded-xl border border-grey-200 bg-grey-50 px-3 py-2">
+      <div className="text-[10px] font-semibold uppercase tracking-widest text-grey-400">
+        track fee <span className="text-grey-300">2% vs a book&apos;s 20%+ vig</span>
       </div>
-      <div className="font-mono text-sm font-bold tabular-nums text-white/70">${display.toFixed(2)}</div>
+      <div className="font-mono text-sm font-bold tabular-nums text-grey-700">${display.toFixed(2)}</div>
     </div>
   );
 }

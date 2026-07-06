@@ -7,7 +7,7 @@
     @apply font-neue;
   }
 
-  /* Keyboard focus ring in the project accent, offset against the dark track. Every
+  /* Keyboard focus ring in the project accent, offset against the light page. Every
      interactive element carries this so tabbing through the app is always visible. */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-track-base;
@@ -23,41 +23,43 @@
   /* Primary CTA: solid project accent with the inset top-edge highlight signature. On press the
      highlight drops so the button reads as pushed into the surface. */
   .btn-primary {
-    @apply btn border border-brand-purple-light/50 bg-brand text-white shadow-primary hover:brightness-110 active:shadow-none;
+    @apply btn border border-purple-400/60 bg-brand text-white shadow-primary hover:brightness-105 active:shadow-none;
   }
 
   /* Hero CTA: primary plus a soft accent glow, for the one lead action on a landing surface. */
   .btn-hero {
-    @apply btn border border-brand-purple-light/50 bg-brand text-white shadow-cta hover:brightness-110 active:shadow-none;
+    @apply btn border border-purple-400/60 bg-brand text-white shadow-cta hover:brightness-105 active:shadow-none;
   }
 
-  /* Secondary: neutral glass surface for the lower-priority action beside a primary. */
+  /* Secondary: neutral raised white surface with the engineered button edge, for the
+     lower-priority action beside a primary. */
   .btn-secondary {
-    @apply btn border border-white/10 bg-white/[0.05] text-white/85 shadow-card-dark hover:border-white/20 hover:bg-white/[0.09];
+    @apply btn border border-grey-200 bg-white text-grey-800 shadow-button hover:border-grey-300 hover:bg-grey-50;
   }
 
   /* Ghost: text-only tertiary action (back to start, dismiss). */
   .btn-ghost {
-    @apply btn text-white/45 hover:text-white/80;
+    @apply btn text-grey-400 hover:text-grey-700;
   }
 
-  /* Status pill base. Tone (colour by meaning) is applied per instance. */
+  /* Status pill base. Tone (colour by meaning) is applied per instance. The white inner
+     highlight is Danny's pill signature and pops the tinted pills on the light field. */
   .pill {
-    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ring-1;
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-pill-highlight ring-1;
   }
 
-  /* Surface card on the 16px radius step. */
+  /* Surface card on the 16px radius step: a raised white surface with the soft ambient drop. */
   .surface-card {
-    @apply rounded-2xl border border-white/10 bg-track-panel/70 shadow-card-dark;
+    @apply rounded-2xl border border-grey-200 bg-track-panel shadow-card-drop;
   }
 
   /* Interactive card (draft candidate, copy row): adds hover lift and the keyboard ring. */
   .card-interactive {
-    @apply transition duration-150 ease-out hover:border-white/20 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-track-base active:scale-[0.99];
+    @apply transition duration-150 ease-out hover:border-grey-300 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-track-base active:scale-[0.99];
   }
 
   .glass-panel {
-    @apply rounded-2xl border border-white/10 bg-track-panel/70 shadow-card-dark backdrop-blur-xl;
+    @apply rounded-2xl border border-grey-200 bg-white/80 shadow-card-drop backdrop-blur-xl;
   }
 
   .purple-text {
@@ -70,12 +72,12 @@
 
   /* Loading skeleton block: mirrors the final layout, shimmers rather than flashing blank. */
   .skeleton {
-    @apply relative overflow-hidden rounded-xl bg-white/[0.045];
+    @apply relative overflow-hidden rounded-xl bg-grey-100;
   }
   .skeleton::after {
     content: '';
     @apply absolute inset-0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
     animation: shimmer 1.4s ease-in-out infinite;
   }
 }

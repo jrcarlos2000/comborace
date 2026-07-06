@@ -67,7 +67,14 @@ try {
   // Race (mid-motion). The preview server has no /ws, so the feed falls back to the local
   // mock quickly; wait for cars to spread across the track.
   await clickByText(page, 'Watch a race');
-  await sleep(12000);
+  // Dismiss the first-run coach so the race track itself is what gets captured.
+  await sleep(1500);
+  try {
+    await clickByText(page, 'Skip');
+  } catch {
+    // coach already gone
+  }
+  await sleep(11000);
   await page.screenshot({ path: resolve(outDir, 'race.png') });
   console.log('shot race');
 
@@ -75,6 +82,12 @@ try {
   await sleep(9000);
   await page.screenshot({ path: resolve(outDir, 'race-late.png') });
   console.log('shot race-late');
+
+  // Full-time result overlay: let the mock race run to the whistle, then capture the payout.
+  await page.waitForFunction(() => document.body.innerText.includes('Back to start'), { timeout: 40000 });
+  await sleep(1400);
+  await page.screenshot({ path: resolve(outDir, 'result.png') });
+  console.log('shot result');
 
   // Lobby draft board
   const page2 = await browser.newPage();
