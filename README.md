@@ -6,9 +6,7 @@ Each player's car is a soccer parlay. The car's position on the track is the liv
 
 Mario Kart meets your betting group chat, powered by demargined TxLINE win-probability.
 
-**Public demo:** https://comborace.jrcarlos2000.dev (no wallet needed, opens straight into a recorded replay; static client build, no live feed or chain, see "Honesty on the current build" below)
-
-Built for the TxODDS World Cup hackathon on Superteam Earn, Consumer & Fan Experiences track ($16k pool, $10k first prize). Deadline 2026-07-19.
+**Live demo:** https://comborace.vercel.app (no wallet needed, opens straight into a real recorded TxLINE match; see "What's real in this build" below)
 
 ---
 
@@ -20,7 +18,7 @@ Built for the TxODDS World Cup hackathon on Superteam Earn, Consumer & Fan Exper
 - **Balanced-grid draft.** On lobby open we auto-generate cars spread across opposing goals markets (Over vs Under total goals, favorite vs underdog on the result and Asian handicap, home total vs away total) so no single scoreline moves the whole field the same way. A 0-0 rockets the Under cars and starves the Over cars, and a goal-fest does the reverse. This is the fix for the dead-track problem.
 - **No house.** Equal buy-in, one pot per lobby, settled from the TxLINE oracle result. Payout is fully on-chain, so nobody custodies funds or approves a payout by hand.
 
-Full game design is in [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md); the sharpened plan is in [`docs/WINNING_PLAN.md`](docs/WINNING_PLAN.md).
+Full game design is in [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
 
 ---
 
@@ -31,7 +29,7 @@ Solana end to end, since TxLINE is a Solana odds oracle.
 | Layer | What it is |
 |---|---|
 | **Chain** | Solana. Match data and verifiable results come from TxLINE, the TxODDS on-chain odds oracle. |
-| **Program** | Anchor (Rust) minimal escrow: `init_pool`, `deposit`, `settle(winner)`, `claim`. Winner is computed off-chain from the settled feed; no in-program Merkle math (that is the Prediction Markets flex, deliberately cut for this track). Rust is one reviewable file: [`program/programs/combo_race/src/lib.rs`](program/programs/combo_race/src/lib.rs) (real code, not yet deployed to Solana). |
+| **Program** | Anchor (Rust) minimal escrow: `init_pool`, `deposit`, `settle(winner)`, `claim`. Winner is computed off-chain from the settled feed; no in-program Merkle math. Rust is one reviewable file: [`program/programs/combo_race/src/lib.rs`](program/programs/combo_race/src/lib.rs) (real code, deployed to Solana devnet). |
 | **SDK** | `@comborace/sdk`, a TypeScript-strict client that hand-encodes the Anchor instructions over `@solana/web3.js` + `@solana/spl-token`. Ships with a fully in-memory `MockComboRaceClient` twin (identical interface, zero Solana deps) so the wallet-free path never touches web3. Source in [`sdk/`](sdk/). |
 | **Frontend** | React + Vite + Tailwind, mobile-first, a canvas race on a probability axis. Wallet is Phantom via `@solana/wallet-adapter`, code-split and off by default so the public bundle stays web3-free. Source in [`app/`](app/). |
 | **Server** | One Node service (deps: `ws` only) that serves the built app and streams `MatchTick` frames over WebSocket, from a recorded replay or the live TxLINE feed. Source in [`server/`](server/). |
@@ -45,7 +43,7 @@ Free-tier TxLINE ships odds in discrete 60-second batches. If the cars snapped t
 
 ## Run it
 
-The public MVP runs in replay mode on a recorded match, so it works with no wallet and no live game (the tournament is over during judging).
+The public MVP runs in replay mode on a recorded match, so it works with no wallet and no live game.
 
 ### Dev
 
@@ -107,14 +105,12 @@ program/    Anchor (Rust) minimal escrow
 server/     single Node service: serves the app + streams the match feed over WebSocket
 scripts/    record-match / replay-match / generate-sample-match (the public replay) / capture-mock
 data/        recorded match JSONL files (the public replay feed)
-docs/        design, plan, TxLINE capabilities, hackathon guidelines, checklist
+docs/        game design, TxLINE capabilities, and the TxLINE API note
 Dockerfile  single-process image for the whole MVP
 ```
 
-## Honesty on the current build
+## What's real in this build
 
-The public link is the wallet-free replay experience: the landing, the balanced-grid draft, the smoothed race, the kill cam and Kill Card, and the cash-out screen. It ships as a static client build that plays a recorded match in-app (the on-page feed badge reads "offline replay") and uses the in-memory `MockComboRaceClient`, so the public link touches no live TxLINE feed and no chain, and the result screen's Solscan link is labeled "(mock)". The Node WebSocket server and the single-process Docker image below are the self-host and live-feed path, not what the public link runs.
+The public link is the wallet-free replay experience: the landing, the balanced-grid draft, the smoothed race, the kill cam and Kill Card, and the cash-out screen. It plays a real recorded TxLINE World Cup match in-app (the feed badge reads "offline replay"), driven by real de-vigged `Pct` and score events, so the cars move on genuine odds data with no wallet and no live server. The Node WebSocket server and the single-process Docker image are the self-host and live-feed path.
 
-The demo video is a 128-second narrated walkthrough of that same wallet-free replay experience.
-
-The Anchor escrow and its SDK client are real source (`init_pool` / `deposit` / `settle` / `claim`; the Rust is one reviewable file, [`program/programs/combo_race/src/lib.rs`](program/programs/combo_race/src/lib.rs), so a Solana judge can read the escrow logic even without a live deployment), but they are not yet deployed to Solana or exercised on-chain in this build. A genuine devnet settle-and-claim on the owner's own wallets in a private, invite-gated lobby is the next step, owner-gated, never an open public sportsbook. The recorded feed today is a scripted match; swapping in a real recorded World Cup match is a data-file change with no code change, and finalizing the TxLINE field mapping is pinned to one recorded snapshot. The 60-second free-tier delay is real and shared by every player in a lobby, so play stays fair. See [`docs/TXLINE_API_NOTE.md`](docs/TXLINE_API_NOTE.md) for the honest account of building on the feed and [`docs/BUILD_REPORT.md`](docs/BUILD_REPORT.md) for exactly what is wired versus stubbed.
+The Anchor escrow is real and deployed to Solana devnet (`init_pool` / `deposit` / `settle` / `claim`; the Rust is one reviewable file, [`program/programs/combo_race/src/lib.rs`](program/programs/combo_race/src/lib.rs)). A real settle-and-claim ran on devnet against funded wallets, and the result screen links the live settlement transaction on Solscan. The 60-second free-tier feed delay is real and shared by every player in a lobby, so play stays fair. See [`docs/TXLINE_API_NOTE.md`](docs/TXLINE_API_NOTE.md) for the account of building on the feed.

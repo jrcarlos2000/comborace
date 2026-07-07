@@ -18,7 +18,7 @@ export interface MomentData {
   isYou: boolean;
 }
 
-const SHARE_URL = 'https://comborace.jrcarlos2000.dev';
+const SHARE_URL = 'https://comborace.vercel.app';
 
 async function capture(node: HTMLElement): Promise<Blob | null> {
   return toBlob(node, { pixelRatio: 2.4, cacheBust: true, backgroundColor: colors.track.base });
