@@ -4,7 +4,6 @@ Analyzed 2026-07-05 from https://txline-docs.txodds.com/llms.txt and the odds/sc
 
 ## One-line project
 MoneyPitch: put USDC on a team and watch your stake move down a live soccer pitch as the odds shift, paid out trustlessly from TxLINE's verifiable on-chain result, so a non-fan can feel the match through their money. Tagline: "Betting you can watch."
-Track: Consumer & Fan Experiences ($16K).
 
 ## What TxLINE HAS (confirmed)
 - **Stable Price odds:** TxODDS consensus pricing engine (aggregated global operator lines, filtered), "anchored on Solana," cryptographically verifiable. Derive win-probability from it to place the ball.

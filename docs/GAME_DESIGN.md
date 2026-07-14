@@ -1,6 +1,6 @@
 # Combo Race - game design + data confirmation
 
-Updated 2026-07-05. Concept: a private real-money "combo race" where each player's car = a parlay, cars advance/crash live off TxLINE, last/best combo home takes the pot. Track: Consumer & Fan Experiences ($16K).
+Updated 2026-07-05. Concept: a private real-money "combo race" where each player's car = a parlay, cars advance/crash live off TxLINE, last/best combo home takes the pot.
 
 ## Live data: CONFIRMED (verified in the TxLINE OpenAPI)
 - Odds: `GET /api/odds/stream` (SSE, has `InRunning` boolean for in-play), `/api/odds/updates/{fixtureId}`, `/api/odds/snapshot/{fixtureId}`.
