@@ -341,7 +341,7 @@ function CarLane({
         <span className={`pos-badge${place === 1 && status !== 'crashed' ? ' pos-lead' : ''}`}>
           {status === 'crashed' ? 'X' : place ? `P${place}` : 'P-'}
         </span>
-        <span className="truncate text-[12px] font-bold text-grey-700">{combo.handle}</span>
+        <span className="truncate text-[12px] font-bold text-white/85">{combo.handle}</span>
         {isYou && <span className="you-badge">YOU</span>}
         {status === 'crashed' && <span className="ml-auto font-mono text-[11px] font-black text-crash">CRASHED</span>}
         {status === 'cashed' && <span className="ml-auto font-mono text-[11px] font-black text-cash">WON</span>}
