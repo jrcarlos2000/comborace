@@ -29,8 +29,8 @@ export function Scoreboard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-black tracking-tight">
-            <span className="text-brand">COMBO</span>
-            <span className="text-grey-950">RACE</span>
+            <span className="text-brand">RED</span>
+            <span className="text-grey-950">LINE</span>
           </span>
           {feed}
         </div>

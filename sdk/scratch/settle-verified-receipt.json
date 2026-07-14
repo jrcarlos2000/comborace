@@ -1,0 +1,18 @@
+{
+  "programId": "2R3oZhzqf1gS37FAikN5zBZYGVbLnhQw5unR7JWnHiz4",
+  "pool": "94QhdRQ1tKwQ79VFhqiFPmzDm2xuSFJ9cCmvRcZmRrDJ",
+  "fixtureId": 17952170,
+  "seq": 941,
+  "statKey": 1002,
+  "period": 4,
+  "threshold": 0,
+  "comparison": 0,
+  "dailyScoresRootPda": "HYo6qqMUXRaMit2YF6q6YEh5K1mWYBFC3pDZrV2HZN5f",
+  "oracleProgram": "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J",
+  "initPoolTx": "2eoR7XGsfKmaZt3zEXLPvT7XjKqqoWhrTQBgtWoCSX8Bsh6sgLPSAvDeYkq12EX1HztpaKJwSpVDzExCpgKKJ6Jp",
+  "setQuestionTx": "5FY9MsaCukSUJH9P9G7WWJUjWZXq8gR7Pehmrb3XP1PgzYMggJrpSLU4Moqddc44NYEunjvkkLVyCdB2cdkY4vHg",
+  "settleVerifiedTx": "3aKFwL1SKNiL4attMLeiqCdrUgSqWXMGgtCaUHKRgEuoxpdTMes8PzGA2JN9WwDRZtnv4ErJDtQGzf1R2v4RMBZY",
+  "solscan": "https://solscan.io/tx/3aKFwL1SKNiL4attMLeiqCdrUgSqWXMGgtCaUHKRgEuoxpdTMes8PzGA2JN9WwDRZtnv4ErJDtQGzf1R2v4RMBZY?cluster=devnet",
+  "verified": true,
+  "verifiedOutcome": true
+}

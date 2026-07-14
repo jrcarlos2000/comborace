@@ -35,8 +35,8 @@ export function Landing({
 function Wordmark({ className = '' }: { className?: string }) {
   return (
     <span className={`font-black tracking-tight ${className}`}>
-      <span className="text-grey-950">COMBO</span>
-      <span className="text-brand">RACE</span>
+      <span className="text-grey-950">RED</span>
+      <span className="text-brand">LINE</span>
     </span>
   );
 }

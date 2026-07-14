@@ -15,7 +15,7 @@ Because position is probability and not elapsed minutes, even a scoreless match 
 
 ## One combo, one number
 
-A combo is several legs stacked together, and all of them have to land. ComboRace reads the live win-probability of each pending leg from the feed and multiplies them into a single number: the chance the whole parlay still pays. That number is the car's position. As the individual legs move tick by tick, the product moves, and the car moves with it.
+A combo is several legs stacked together, and all of them have to land. Redline reads the live win-probability of each pending leg from the feed and multiplies them into a single number: the chance the whole parlay still pays. That number is the car's position. As the individual legs move tick by tick, the product moves, and the car moves with it.
 
 Every car starts from the same line regardless of how hard its combo is, so an easy combo and a hard combo launch together and the race stays readable. The pool still pays each car by its live multiplier, so a harder combo earns more if it comes home.
 

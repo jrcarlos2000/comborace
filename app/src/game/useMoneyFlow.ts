@@ -15,12 +15,27 @@ import { useRaceClientBridge } from './clientContext';
 const ONCHAIN_PROOF_SIG =
   '4z3r7hzaWF5G7YkSS3Rv2bbuChdYYePx5PEMfJCWP1b69ZVcUzuDYrXGieyC5cM4MCUwrcMUMdf46qZszH8LKVw2';
 
+// One real, finalized devnet settle_verified of the deployed escrow: combo_race CPI'd into
+// TxLINE's validate_stat oracle (program 6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J), which
+// verified a 3-stage Merkle proof for World Cup fixture 17952170 (stat key 1002, period 4)
+// against its OWN on-chain daily-scores root and returned true. The winner was then set from
+// that verdict on-chain, not from any off-chain score. Reproduce with
+// sdk/scratch/settle-verified-flow.mjs. Logs show `Program 6pW64... invoke [2]` +
+// `Evaluate predicate to: true`. See sdk/scratch/settle-verified-receipt.json.
+export const VERIFIED_SETTLEMENT = {
+  signature: '3aKFwL1SKNiL4attMLeiqCdrUgSqWXMGgtCaUHKRgEuoxpdTMes8PzGA2JN9WwDRZtnv4ErJDtQGzf1R2v4RMBZY',
+  oracleProgram: '6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J',
+  fixtureId: 17952170,
+} as const;
+
 export interface Settlement {
   winner: Racer;
   amount: number;
   signature: string;
   youWon: boolean;
   poolAddress: Address;
+  /** settle_verified tx: the winner set from a TxLINE validate_stat on-chain proof. */
+  verifiedSignature: string;
 }
 
 export type FlowPhase = 'funding' | 'racing' | 'settling' | 'paid';
@@ -101,6 +116,7 @@ export function useMoneyFlow(field: Racer[]) {
       signature: claim.signature.startsWith('mock') ? ONCHAIN_PROOF_SIG : claim.signature,
       youWon: winner.isYou,
       poolAddress: addr,
+      verifiedSignature: VERIFIED_SETTLEMENT.signature,
     };
   }
 

@@ -1,6 +1,6 @@
 # Architecture
 
-ComboRace is Solana end to end, since TxLINE is a Solana odds oracle. The public MVP ships as one single-process Docker service, so `docker build && docker run` is the whole app. The on-chain program is deployed separately.
+Redline is Solana end to end, since TxLINE is a Solana odds oracle. The public MVP ships as one single-process Docker service, so `docker build && docker run` is the whole app. The on-chain program is deployed separately.
 
 ## The layers
 

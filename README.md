@@ -1,4 +1,4 @@
-# ComboRace
+# Redline
 
 **Your group-chat parlay, turned into a live car race where the cars ARE the odds.**
 
@@ -86,11 +86,11 @@ node scripts/replay-match.mjs --in data/semi1.jsonl --speed 20
 
 ## Monetization and the flywheel
 
-ComboRace is a demand engine for TxODDS's own product, not a competitor to it. Every unit of growth pulls through a paid TxLINE subscription.
+Redline is a demand engine for TxODDS's own product, not a competitor to it. Every unit of growth pulls through a paid TxLINE subscription.
 
 - **Thin on-chain track fee.** We take roughly 2%, disclosed and accruing to a protocol PDA, far below a book's ~20%+ compounded combo vig. This is possible because TxLINE's `Pct` is already de-margined, so a four-leg combo costs about 2% here versus the compounded vig at a sportsbook. That price gap is the switching argument.
 - **Consumer Pit Pass.** The free tier runs on the 60-second World Cup feed. Premium play (bigger pools, private leagues, replays) needs the real-time feed that only exists on paid mainnet TxLINE, so a paying fan literally funds a feed pull.
-- **B2B white-label.** A sportsbook that white-labels the ComboRace watch-along widget must subscribe to a real-time TxLINE feed to power it, which turns ComboRace into a feature TxODDS's sales team attaches to feed deals. A "bet this combo for real at [BookPartner]" deep link is the CPA funnel; the book carries all licensing and custody inside its regulated perimeter, and ComboRace is the engine, funnel, and data layer.
+- **B2B white-label.** A sportsbook that white-labels the Redline watch-along widget must subscribe to a real-time TxLINE feed to power it, which turns Redline into a feature TxODDS's sales team attaches to feed deals. A "bet this combo for real at [BookPartner]" deep link is the CPA funnel; the book carries all licensing and custody inside its regulated perimeter, and Redline is the engine, funnel, and data layer.
 
 The builder's growth and the sponsor's core feed revenue are the same arrow.
 

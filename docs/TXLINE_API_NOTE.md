@@ -1,8 +1,8 @@
 # Building on TxLINE: an honest note
 
-This is the required write-up on what it was actually like to build ComboRace on the TxLINE API. The whole game hangs on one field, so I will start there.
+This is the required write-up on what it was actually like to build Redline on the TxLINE API. The whole game hangs on one field, so I will start there.
 
-One scope note first, so nothing below reads as more than it is: this reflects building ComboRace's record/replay and mapping layers against TxLINE's documented endpoints and payload shapes. The final live production pull, pinning the mapping to one real recorded snapshot, is still pending. So where I call something smooth or rich, I mean how the API is shaped to build against, kept honest and separate from any claim of a finished end-to-end live integration.
+One scope note first, so nothing below reads as more than it is: this reflects building Redline's record/replay and mapping layers against TxLINE's documented endpoints and payload shapes. The final live production pull, pinning the mapping to one real recorded snapshot, is still pending. So where I call something smooth or rich, I mean how the API is shaped to build against, kept honest and separate from any claim of a finished end-to-end live integration.
 
 ## The key input: the de-vigged `Pct`
 

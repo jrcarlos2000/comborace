@@ -1,4 +1,4 @@
-// Static "License ComboRace" screen: the growth flywheel where fans and white-label books both
+// Static "License Redline" screen: the growth flywheel where fans and white-label books both
 // pull through a paid TxLINE feed. Framed as skill-game plus B2B infrastructure (a 2% track fee
 // against a book's 20%+ compounded vig), not the crowded "no house / undercut the vig" pitch.
 export function Flywheel({ onBack }: { onBack: () => void }) {
@@ -12,14 +12,14 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
         >
           &#8592;
         </button>
-        <span className="text-sm font-bold text-grey-800">License ComboRace</span>
+        <span className="text-sm font-bold text-grey-800">License Redline</span>
       </div>
 
       <h1 className="text-[30px] font-black leading-tight tracking-tight text-grey-950">
         A demand engine for the <span className="text-brand">TxLINE feed</span>
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-grey-600">
-        ComboRace is a skill-game watch-along and a B2B widget. Every unit of growth, fan or
+        Redline is a skill-game watch-along and a B2B widget. Every unit of growth, fan or
         book, pulls through a paid real-time TxLINE subscription. The builder&apos;s growth and the
         sponsor&apos;s feed revenue are the same arrow.
       </p>
@@ -33,7 +33,7 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
         <FlywheelStep
           n={2}
           title="Books white-label the widget"
-          body="A sportsbook that embeds the ComboRace watch-along must subscribe to a real-time TxLINE feed to power it. The book carries licensing and custody inside its regulated perimeter; ComboRace is the engine and funnel."
+          body="A sportsbook that embeds the Redline watch-along must subscribe to a real-time TxLINE feed to power it. The book carries licensing and custody inside its regulated perimeter; Redline is the engine and funnel."
         />
         <FlywheelStep
           n={3}
@@ -69,7 +69,7 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
         <div className="mt-2 flex items-end gap-6">
           <div>
             <div className="font-mono text-3xl font-black text-cash">2%</div>
-            <div className="mt-0.5 text-[11px] text-grey-500">ComboRace track fee</div>
+            <div className="mt-0.5 text-[11px] text-grey-500">Redline track fee</div>
           </div>
           <div className="pb-1 text-grey-400">vs</div>
           <div>

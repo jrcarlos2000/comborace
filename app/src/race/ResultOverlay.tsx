@@ -78,6 +78,8 @@ export function ResultOverlay({
           )}
           <SettlementLine settlement={settlement} settling={settling} />
 
+          {settlement && <VerifiedLine settlement={settlement} />}
+
           {settlement && <TrackFee pot={amount} />}
 
           <div className="mt-3 space-y-1.5">
@@ -176,6 +178,34 @@ function SettlementLine({ settlement, settling }: { settlement: Settlement | nul
           <span className="shrink-0">no on-chain tx in this build</span>
         </span>
       )}
+    </div>
+  );
+}
+
+// The result-verifiability line: the winner was set on-chain by a CPI into TxLINE's
+// validate_stat oracle, which checked a Merkle proof against its own on-chain daily-scores
+// root and returned the outcome. This is what gates settlement, not an off-chain score.
+function VerifiedLine({ settlement }: { settlement: Settlement }) {
+  const sig = settlement.verifiedSignature;
+  if (!sig || !isRealSignature(sig)) return null;
+  return (
+    <div className="mt-2 rounded-2xl bg-brand/[0.07] px-3 py-2.5 ring-1 ring-brand/25">
+      <div className="flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+        <span className="text-[11px] font-bold text-brand">
+          Result verified on-chain via TxLINE validate_stat
+        </span>
+      </div>
+      <a
+        href={`https://solscan.io/tx/${sig}?cluster=devnet`}
+        target="_blank"
+        rel="noreferrer"
+        className="focus-ring mt-1 flex items-center gap-1.5 truncate rounded font-mono text-[10px] text-grey-400 underline decoration-grey-300"
+      >
+        <span className="truncate">{sig}</span>
+        <span className="h-1 w-1 shrink-0 rounded-full bg-grey-300" />
+        <span className="shrink-0">oracle proof on Solscan</span>
+      </a>
     </div>
   );
 }

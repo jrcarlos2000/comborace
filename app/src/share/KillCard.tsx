@@ -29,8 +29,8 @@ async function capture(node: HTMLElement): Promise<Blob | null> {
 function shareOnX(moment: MomentData): void {
   const text =
     moment.kind === 'crash'
-      ? `${moment.handle} got WRECKED on ComboRace. ${moment.detail}`
-      : `${moment.handle} CASHED on ComboRace. ${moment.detail}`;
+      ? `${moment.handle} got WRECKED on Redline. ${moment.detail}`
+      : `${moment.handle} CASHED on Redline. ${moment.detail}`;
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SHARE_URL)}`;
   window.open(url, '_blank', 'noopener,noreferrer');
 }
@@ -41,13 +41,13 @@ async function shareNode(node: HTMLElement, moment: MomentData): Promise<'shared
   const file = new File([blob], `comborace-${moment.kind}-${moment.handle}.png`, { type: 'image/png' });
   const text =
     moment.kind === 'crash'
-      ? `${moment.handle} got WRECKED on ComboRace. ${moment.detail}`
-      : `${moment.handle} CASHED on ComboRace. ${moment.detail}`;
+      ? `${moment.handle} got WRECKED on Redline. ${moment.detail}`
+      : `${moment.handle} CASHED on Redline. ${moment.detail}`;
 
   const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
   if (nav.canShare?.({ files: [file] }) && nav.share) {
     try {
-      await nav.share({ files: [file], text, title: 'ComboRace' });
+      await nav.share({ files: [file], text, title: 'Redline' });
       return 'shared';
     } catch {
       // User dismissed the sheet or the platform refused; fall through to a download.
@@ -84,8 +84,8 @@ export const ShareCard = forwardRef<HTMLDivElement, { moment: MomentData }>(func
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
         <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: '-0.02em' }}>
-          <span style={{ color: colors.brand.DEFAULT }}>COMBO</span>
-          <span style={{ color: colors.grey[950] }}>RACE</span>
+          <span style={{ color: colors.brand.DEFAULT }}>RED</span>
+          <span style={{ color: colors.grey[950] }}>LINE</span>
         </span>
         <span
           style={{
@@ -244,7 +244,7 @@ export function ShareButton({
   );
 }
 
-// Opens an X compose window pre-filled with the moment and the ComboRace link, so a shared post
+// Opens an X compose window pre-filled with the moment and the Redline link, so a shared post
 // unfurls the OG card. Reuses the same copy the image share uses.
 export function ShareOnXButton({ moment, className }: { moment: MomentData; className?: string }) {
   return (

@@ -17,7 +17,7 @@ This is the mode that runs on the public link. It exists so a first-time visitor
 The full loop is a private, invite-gated pool with friends. This is where the money tension lives.
 
 1. **Ante into the pool.** Everyone in the lobby puts in an equal USDC buy-in. One pot per lobby, no house, no bookmaker taking the other side.
-2. **Draft a car.** On lobby open, ComboRace auto-generates a grid of pre-built cars spread across opposing goals markets (Over versus Under total goals, favorite versus underdog on the result and Asian handicap, home total versus away total). Players snake-draft distinct cars. The one allowed duplicate is copying a friend's car, which puts the two cars in a shared lane as visible doppelgangers for a personal duel.
+2. **Draft a car.** On lobby open, Redline auto-generates a grid of pre-built cars spread across opposing goals markets (Over versus Under total goals, favorite versus underdog on the result and Asian handicap, home total versus away total). Players snake-draft distinct cars. The one allowed duplicate is copying a friend's car, which puts the two cars in a shared lane as visible doppelgangers for a personal duel.
 3. **Watch it crash or cash.** Kickoff locks the grid and the race runs off the live feed. Every car carries an always-on ticker showing what you take if the whistle blew right now, computed from the pool weighted by the surviving cars. That number ticks up every time a rival explodes.
 4. **Get paid.** At full time the pot goes to the survivor, or to the best live multiplier if more than one car is still alive. Settlement fires on-chain from the verifiable TxLINE result. A wallet toast confirms what you received, with a link to the on-chain transaction.
 
