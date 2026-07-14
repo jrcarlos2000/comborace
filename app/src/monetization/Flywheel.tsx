@@ -42,6 +42,28 @@ export function Flywheel({ onBack }: { onBack: () => void }) {
         />
       </div>
 
+      <div className="surface-card mt-7 p-4">
+        <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand">Consumer Pit Pass</div>
+        <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+          <div className="rounded-xl bg-grey-50 py-3 ring-1 ring-grey-200">
+            <div className="font-mono text-lg font-black text-grey-950">Free</div>
+            <div className="mt-0.5 text-[10px] leading-tight text-grey-500">watch + play, 60s feed</div>
+          </div>
+          <div className="rounded-xl bg-grey-50 py-3 ring-1 ring-grey-200">
+            <div className="font-mono text-lg font-black text-grey-950">$4<span className="text-[11px] font-semibold text-grey-500">/match</span></div>
+            <div className="mt-0.5 text-[10px] leading-tight text-grey-500">real-time feed, private leagues</div>
+          </div>
+          <div className="rounded-xl bg-grey-50 py-3 ring-1 ring-grey-200">
+            <div className="font-mono text-lg font-black text-grey-950">$29<span className="text-[11px] font-semibold text-grey-500">/cup</span></div>
+            <div className="mt-0.5 text-[10px] leading-tight text-grey-500">full tournament pass</div>
+          </div>
+        </div>
+        <p className="mt-3 text-[12px] leading-relaxed text-grey-500">
+          Premium play needs the real-time feed that only exists on paid mainnet TxLINE, so every
+          upgrade funds a feed pull. Books white-label the widget on their own feed deal.
+        </p>
+      </div>
+
       <div className="mt-7 rounded-2xl border border-brand/25 bg-brand/[0.05] p-4">
         <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand">the number that switches you</div>
         <div className="mt-2 flex items-end gap-6">
