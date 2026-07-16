@@ -1,3 +1,5 @@
+![Redline, your parlay is a car](docs/media/hero.jpg)
+
 # Redline
 
 **Your group-chat parlay, turned into a live car race where the cars ARE the odds.**
