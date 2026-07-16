@@ -2,7 +2,7 @@
 // ComboRace - TxLINE match recorder.
 // Records one real World Cup fixture to a JSONL of raw { t, wallClock, minute, odds, scores }
 // snapshots, exactly the shape the server ReplaySource + txline MatchEngine consume. The public
-// MVP runs on replay (the tournament is over during judging), so a completed match is recorded
+// MVP runs on replay (the tournament has ended), so a completed match is recorded
 // once and replayed forever.
 //
 // Auth: every data call sends BOTH credentials from the free World Cup tier flow (see

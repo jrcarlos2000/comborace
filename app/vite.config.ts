@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Real on-chain client + Phantom are opt-in at build time. Off by default so the judge bundle
+// Real on-chain client + Phantom are opt-in at build time. Off by default so the default bundle
 // stays wallet-free and mock-only.
 const REAL_CLIENT = process.env.VITE_REAL_CLIENT === 'true';
 
