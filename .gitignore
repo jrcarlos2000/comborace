@@ -10,5 +10,5 @@ app/screenshots/
 .vercel/
 .DS_Store
 
-# private submission notes (paste-ready form fields), never commit
+# private local notes, never commit
 SUBMISSION.md
