@@ -10,5 +10,3 @@ app/screenshots/
 .vercel/
 .DS_Store
 
-# private local notes, never commit
-SUBMISSION.md
