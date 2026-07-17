@@ -33,6 +33,14 @@ export function ResultOverlay({
   const winner = useMemo(() => pickWinner(field, cars), [field, cars]);
   const winnerCrashed = cars.find((c) => c.id === winner.combo.id)?.status === 'crashed';
 
+  // Mount transition: the scrim fades and the panel rises on the first painted frame instead of
+  // snapping in. Flipped after mount via rAF so the initial (hidden) state actually renders once.
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   const ranked = useMemo(() => {
     return [...cars].sort((a, b) => {
       const rank = (c: CarTick) => (c.status === 'cashed' ? 2 : c.status === 'crashed' ? 0 : 1);
@@ -64,8 +72,16 @@ export function ResultOverlay({
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end justify-center overflow-y-auto bg-grey-950/40 p-4 backdrop-blur-sm sm:items-center">
-      <div className="my-auto w-full max-w-md">
+    <div
+      className={`fixed inset-0 z-40 flex items-end justify-center overflow-y-auto bg-grey-950/40 p-4 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:duration-150 sm:items-center ${
+        entered ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
+      <div
+        className={`my-auto w-full max-w-md transition-all duration-300 ease-out motion-reduce:!translate-y-0 motion-reduce:duration-150 ${
+          entered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}
+      >
         <div className="mb-3 flex justify-center">
           <ShareCard ref={cardRef} moment={card} />
         </div>
@@ -88,9 +104,10 @@ export function ResultOverlay({
               return (
                 <div
                   key={c.id}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2 ring-1 ${
-                    isWinner ? 'bg-cash/[0.08] ring-cash/30' : 'bg-grey-50 ring-grey-200'
-                  }`}
+                  style={{ transitionDelay: entered ? `${i * 60}ms` : '0ms' }}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2 ring-1 transition-all duration-[250ms] ease-out motion-reduce:!translate-y-0 motion-reduce:!transition-none ${
+                    entered ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+                  } ${isWinner ? 'bg-cash/[0.08] ring-cash/30' : 'bg-grey-50 ring-grey-200'}`}
                 >
                   <span className="w-4 text-center font-mono text-xs text-grey-400">{i + 1}</span>
                   <span className="flex-1 truncate text-sm font-bold text-grey-800">{c.handle}</span>

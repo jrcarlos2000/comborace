@@ -59,8 +59,10 @@ export function Coach({ onDone }: { onDone: () => void }) {
           </button>
         </div>
 
-        <div className={`mt-4 text-xl font-black tracking-tight ${s.accent}`}>{s.title}</div>
-        <p className="mt-2 text-sm leading-relaxed text-grey-600">{s.body}</p>
+        <div key={step} className="coach-step-in">
+          <div className={`mt-4 text-xl font-black tracking-tight ${s.accent}`}>{s.title}</div>
+          <p className="mt-2 text-sm leading-relaxed text-grey-600">{s.body}</p>
+        </div>
 
         <div className="mt-5 flex items-center justify-between">
           <div className="flex gap-1.5" aria-hidden="true">

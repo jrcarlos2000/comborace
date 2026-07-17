@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { toBlob } from 'html-to-image';
 import { difficultyLabel } from '../mock/combos';
 import colors, { brandRgb, cashRgb, crashRgb } from '../theme/colors';
@@ -258,19 +258,51 @@ export function ShareOnXButton({ moment, className }: { moment: MomentData; clas
   );
 }
 
+// How long the sheet holds on screen before it retracts on its own.
+const MOMENT_HOLD_MS = 5000;
+// The exit tween length, mirrored in .moment-exit (200ms) and its reduced-motion fallback (120ms).
+// The parent unmount is delayed by this so the retract actually plays instead of being cut.
+const MOMENT_EXIT_MS = 200;
+
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+}
+
 // Transient bottom sheet fired on each crash/cash. The card stays static (the wrapper does the
-// slide) so the html-to-image capture target is never mid-animation.
+// slide) so the html-to-image capture target is never mid-animation. On dismiss or auto-timeout it
+// plays a symmetric retract (the inverse of the pop-in) and only then tells the parent to unmount.
 export function MomentSheet({ moment, onClose }: { moment: MomentData; onClose: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [leaving, setLeaving] = useState(false);
+  const closedRef = useRef(false);
+
+  // Begin the retract, then hand control back to the parent one exit-length later. Guarded so a
+  // dismiss tap and the hold timeout cannot both fire the unmount.
+  const beginClose = () => {
+    if (closedRef.current) return;
+    closedRef.current = true;
+    setLeaving(true);
+    const delay = prefersReducedMotion() ? 120 : MOMENT_EXIT_MS;
+    window.setTimeout(onClose, delay);
+  };
+
+  // The sheet holds, then retracts itself. Re-arms whenever a new moment takes its place.
+  useEffect(() => {
+    closedRef.current = false;
+    setLeaving(false);
+    const timer = window.setTimeout(beginClose, MOMENT_HOLD_MS);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moment.id]);
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-5">
-      <div className="moment-pop pointer-events-auto w-full max-w-sm">
+      <div className={`${leaving ? 'moment-exit' : 'moment-pop'} pointer-events-auto w-full max-w-sm`}>
         <ShareCard ref={cardRef} moment={moment} />
         <div className="mt-2 flex gap-2">
           <ShareButton moment={moment} cardRef={cardRef} className="btn-primary flex-1 py-3 text-sm" />
           <ShareOnXButton moment={moment} className="btn-secondary px-3 py-3 text-sm" />
-          <button onClick={onClose} className="btn-secondary px-4 py-3 text-sm">
+          <button onClick={beginClose} className="btn-secondary px-4 py-3 text-sm">
             Dismiss
           </button>
         </div>

@@ -85,11 +85,8 @@ export function RaceScreen({
     });
   }, [ended, field, settleAndPay]);
 
-  useEffect(() => {
-    if (!moment) return;
-    const timer = window.setTimeout(() => setMoment(null), 5200);
-    return () => window.clearTimeout(timer);
-  }, [moment]);
+  // The moment sheet owns its own hold-and-retract lifecycle (KillCard MomentSheet), so it plays a
+  // symmetric exit before it unmounts. It calls onClose when that finishes; nothing to time here.
 
   useEffect(() => {
     if (!flash) return;

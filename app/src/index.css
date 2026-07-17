@@ -702,6 +702,73 @@ body {
   }
 }
 
+/* Symmetric exit for the moment sheet: it now retracts along the same authored curve it
+   arrived on instead of vanishing on the frame it times out, so a crash/cash sheet reads as
+   sliding away rather than being cut. The parent delays unmount by the same 200ms. */
+.moment-exit {
+  animation: momentExit 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes momentExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Gentler, not zero: a plain 120ms opacity fade on the way out, no travel. */
+  .moment-exit {
+    animation: momentExitReduced 0.12s ease-out forwards;
+  }
+}
+
+@keyframes momentExitReduced {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Coach step swap: the title/body of the new step rises and fades in (keyed on step) instead of
+   snapping over the old copy, so tapping Next reads as a cross-fade to the next rule. */
+.coach-step-in {
+  animation: coachStepIn 0.2s ease-out;
+}
+
+@keyframes coachStepIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Gentler: a plain 120ms opacity fade, no travel. */
+  .coach-step-in {
+    animation: coachStepInReduced 0.12s ease-out;
+  }
+}
+
+@keyframes coachStepInReduced {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* Full-screen breathing edge when your car teeters near 0% probability. */
 .redline-vignette {
   position: fixed;

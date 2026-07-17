@@ -118,29 +118,38 @@ function NavLink({ href, children }: { href: string; children: ReactNode }) {
 
 function Hero({ onWatch, onLobby }: { onWatch: () => void; onLobby: () => void }) {
   return (
-    <section className="grid items-center gap-10 pb-16 pt-14 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pb-24 lg:pt-24">
-      <div className="max-w-xl">
-        <h1 className="text-[40px] font-black leading-[0.95] tracking-tight text-grey-950 sm:text-[52px] lg:text-[60px]">
+    <section className="grid items-center gap-10 pb-16 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_minmax(0,0.85fr)] lg:gap-16 lg:pb-24 lg:pt-24">
+      <div className="max-w-2xl">
+        <span className="inline-flex items-center gap-2 rounded-full border border-grey-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-grey-500 shadow-button">
+          <span className="h-1.5 w-1.5 rounded-full bg-crash animate-soft-pulse motion-reduce:animate-none" />
+          Live parlay race
+        </span>
+        <h1 className="mt-5 text-[42px] font-black leading-[0.94] tracking-[-0.02em] text-grey-950 sm:text-[56px] lg:text-[64px]">
           Your parlay is a car.
           <br />
           <span className="text-brand">Watch it race.</span>
         </h1>
-        <p className="mt-5 max-w-md text-base leading-relaxed text-grey-600 sm:text-lg">
+        <p className="mt-6 max-w-md text-base leading-relaxed text-grey-600 sm:text-lg">
           Each car is a bet. Its position on the track is the live chance it still cashes, read
           straight from the odds.
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <button onClick={onWatch} className="btn-hero px-6 py-3.5 text-base">
+        <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <button onClick={onWatch} className="btn-hero w-full px-7 py-4 text-base sm:w-auto">
             Watch a race
           </button>
-          <button onClick={onLobby} className="btn-secondary px-6 py-3.5 text-base">
-            Start a private lobby
+          <button
+            onClick={onLobby}
+            className="focus-ring rounded-xl px-2 py-2 text-sm font-semibold text-grey-500 transition hover:text-grey-900"
+          >
+            or start a private lobby
           </button>
         </div>
-        <p className="mt-4 text-sm text-grey-400">It plays a full replay, no wallet or signup needed.</p>
+        <p className="mt-5 text-sm text-grey-400">
+          Plays a full replay in your browser. No wallet, no signup.
+        </p>
       </div>
 
-      <Reveal delayMs={120}>
+      <Reveal delayMs={120} className="lg:justify-self-end">
         <HeroTrack />
       </Reveal>
     </section>
@@ -242,7 +251,7 @@ function Lane({ car, name, legs, pct, pos, drift, tone, chip }: LaneDef) {
         <span className="text-xs font-bold text-grey-800">{name}</span>
         <span className="font-mono text-[10px] font-semibold text-grey-400">{legs}</span>
       </div>
-      <div className="absolute right-3.5 top-2">
+      <div className="absolute right-5 top-2">
         <StateChip tone={tone} label={chip} />
       </div>
 
@@ -274,7 +283,7 @@ function HowItWorks() {
   return (
     <section id="how" className="scroll-mt-24 border-t border-grey-200 py-20 lg:py-28">
       <Reveal className="max-w-xl">
-        <h2 className="text-[30px] font-black leading-tight tracking-tight text-grey-950 sm:text-[38px]">
+        <h2 className="text-[30px] font-black leading-tight tracking-[-0.02em] text-grey-950 sm:text-[38px]">
           How a race works
         </h2>
         <p className="mt-3 text-base text-grey-500">Three moves, and none of them need a spreadsheet.</p>
@@ -338,7 +347,7 @@ function PickChip({
   tone: 'safe' | 'longshot';
   selected?: boolean;
 }) {
-  const oddsTone = tone === 'safe' ? 'text-cash' : 'text-brand';
+  const oddsTone = 'text-grey-800';
   return (
     <div
       className={`flex items-center gap-2.5 rounded-2xl border bg-white px-3 py-2.5 ${
@@ -420,7 +429,7 @@ function Wedge() {
       <Reveal>
         <div className="overflow-hidden rounded-3xl bg-gradient-brand-soft px-6 py-12 ring-1 ring-brand/15 sm:px-12 sm:py-16">
           <div className="max-w-2xl">
-            <h2 className="text-[34px] font-black leading-[1.02] tracking-tight text-grey-950 sm:text-[46px]">
+            <h2 className="text-[34px] font-black leading-[1.02] tracking-[-0.02em] text-grey-950 sm:text-[46px]">
               Betting you can watch.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-grey-700 sm:text-lg">
@@ -484,7 +493,7 @@ function UnderTheHood() {
     <section id="hood" className="scroll-mt-24 border-t border-grey-200 py-20 lg:py-28">
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
         <Reveal className="lg:col-span-5">
-          <h2 className="text-[30px] font-black leading-tight tracking-tight text-grey-950 sm:text-[38px]">
+          <h2 className="text-[30px] font-black leading-tight tracking-[-0.02em] text-grey-950 sm:text-[38px]">
             What it actually runs on
           </h2>
           <p className="mt-3 max-w-md text-base text-grey-500">
@@ -558,18 +567,37 @@ function TechTag({ children }: { children: ReactNode }) {
 
 function FinalCta({ onWatch }: { onWatch: () => void }) {
   return (
-    <section className="border-t border-grey-200 py-20 lg:py-28">
-      <Reveal className="mx-auto max-w-2xl text-center">
-        <h2 className="text-[34px] font-black leading-[1.02] tracking-tight text-grey-950 sm:text-[46px]">
-          Pick a car. Watch it race.
-        </h2>
-        <p className="mx-auto mt-4 max-w-md text-base text-grey-500 sm:text-lg">
-          One tap starts a full replay, with no wallet and no soccer knowledge required.
-        </p>
-        <div className="mt-8 flex justify-center">
-          <button onClick={onWatch} className="btn-hero px-8 py-4 text-lg">
-            Watch a race
-          </button>
+    <section className="py-20 lg:py-28">
+      <Reveal>
+        <div className="relative overflow-hidden rounded-3xl bg-track-panel p-8 shadow-card-drop ring-1 ring-grey-200 sm:p-12 lg:p-14">
+          {/* One neon car parked at the finish, bleeding off the right edge, so the closing band
+              shows the product one last time instead of centering empty space. */}
+          <img
+            src="/cars/car1/hero.png"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-6 bottom-6 hidden w-56 rotate-[-4deg] opacity-90 drop-shadow-[0_10px_24px_rgba(0,0,0,0.25)] sm:block lg:w-72"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-8 right-10 hidden w-2.5 rounded-sm opacity-70 sm:block lg:right-14"
+            style={checker}
+          />
+          <div className="relative max-w-xl">
+            <h2 className="text-[34px] font-black leading-[1.0] tracking-[-0.02em] text-grey-950 sm:text-[46px]">
+              Pick a car.
+              <br />
+              <span className="text-brand">Watch it race.</span>
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-grey-600 sm:text-lg">
+              One tap starts a full replay, with no wallet and no soccer knowledge required.
+            </p>
+            <div className="mt-8">
+              <button onClick={onWatch} className="btn-hero px-8 py-4 text-lg">
+                Watch a race
+              </button>
+            </div>
+          </div>
         </div>
       </Reveal>
     </section>
